@@ -15,6 +15,18 @@
         "41:1:15:10,15:20,15:30,15:40"
       ],
       "baseline_count": 2
+    },
+    {
+      "id": "testi01",
+      "created": "2026-11-04T21:45:00",
+      "query": {
+        "date": "2026-11-07",
+        "players": "4",
+        "to": "10:00",
+        "clubs": "134"
+      },
+      "label": "TESTI · la 7.11. · 4 pelaajaa · Tapiola Golf · klo 10:00 mennessä",
+      "baseline": []
     }
   ]
 }
