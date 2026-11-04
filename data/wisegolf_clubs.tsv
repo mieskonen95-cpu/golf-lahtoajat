@@ -1,112 +1,112 @@
-golf_club_id	name	display_name	domain	rest_url	ajax_url	appauth
-99999	wisegolfclub	WiseGolf vieraspelaajat	wisegolfclub.fi	https://api.wisegolfclub.fi/api/1.0	https://ajax.wisegolfclub.fi	ZEArxdAFCfXE7sSJ
-99998	wnw	WNW	wnw.fi	https://api.wnw.fi/api/1.0	https://ajax.wnw.fi	ZEArxdAFCfXE7sSJ
-91	yyterigolf	Yyteri Golf	yyterigolf.fi	https://api.yyterigolf.fi/api/1.0	https://ajax.yyterigolf.fi	ums7DCgz4NevpmCK
-59	kalafornia	Porin Golfkerho	kalafornia.com	https://api.kalafornia.com/api/1.0	https://ajax.kalafornia.com	St5sZdngQfWg6BUd
-18	hyvigolf	Hyvinkään Golf	hyvigolf.fi	https://api.hyvigolf.fi/api/1.0	https://ajax.hyvigolf.fi	ftrX9FX2uCj39hCc
-62	kankaistengolf	Kankaisten Golf	kgm.fi	https://api.kgm.fi/api/1.0	https://ajax.kgm.fi	yGtDEhu3eHX9bLzM
-66	rivergolf	Nokia River Golf	nokiarivergolf.fi	https://api.nokiarivergolf.fi/api/1.0	https://ajax.nokiarivergolf.fi	NRGsZdngQfWg6St5
-23	jarviseudungolf	Järviseudun Golfseura	jgs.fi	https://api.jgs.fi/api/1.0	https://ajax.jgs.fi	HhgtsfzvVdgZTnQC
-105	iittigolf	Iitti Golf	iittigolf.com	https://api.iittigolf.com/api/1.0	https://ajax.iittigolf.com	K3NrrYd86Zn9Xjny
-77	shg	Suur-Helsingin Golf	shg.fi	https://api.shg.fi/api/1.0	https://ajax.shg.fi	BZSEuePVm5624Tyf
-14	hartolagolf	Hartolan Golfklubi	hartolagolf.com	https://api.hartolagolf.com/api/1.0	https://ajax.hartolagolf.com	Fk57AHPBLzAzc9rs
-108	kytajagolf	Kytäjä Golf	kytajagolf.fi	https://api.kytajagolf.fi/api/1.0	https://ajax.kytajagolf.fi	rdmdy2DgfcbcWnKG
-84	keimolagolf	Keimola Golf	keimolagolf.com	https://api.keimolagolf.com/api/1.0	https://ajax.keimolagolf.com	HhgtsfzvVdgZTnQC
-115	kanavagolf	Kanavagolf Vääksy	kanavagolf.com	https://api.kanavagolf.com/api/1.0	https://ajax.kanavagolf.com	rdmdy2DgKANWnasd
-80	tgk	Tuusulan Golfklubi	tgk.fi	https://api.tgk.fi/api/1.0	https://ajax.tgk.fi	rdmdy2DgfcbWnTGK
-7	ringsidegolf	Espoo Ringside Golf	ringsidegolf.fi	https://api.ringsidegolf.fi/api/1.0	https://ajax.ringsidegolf.fi	HhgtsfzvVdgZTnQee
-63	raumagolf	Rauma Golf	raumagolf.fi	https://api.raumagolf.fi/api/1.0	https://ajax.raumagolf.fi	ums7DCgz4NevpmCK
-83	lakesidegolf	Lakeside Golf Vammala	lakesidegolf.fi	https://api.lakesidegolf.fi/api/1.0	https://ajax.lakesidegolf.fi	LaksZdngQfWg6St5
-64	muuramegolf	Muuramen Golfseura	muuramegolf.fi	https://api.muuramegolf.fi/api/1.0	https://ajax.muuramegolf.fi	rdmuu2DgdsaWnasd
-104	golfpirkkala	Golf Pirkkala	golfpirkkala.fi	https://api.golfpirkkala.fi/api/1.0	https://ajax.golfpirkkala.fi	k4RHsj8xSswyMk6J
-47	tahkogolf	Tahko Golf	tahkogolf.fi	https://api.tahkogolf.fi/api/1.0	https://ajax.tahkogolf.fi	ums7DCgz4NagExFK
-48	nordcenter	Nordcenter Golf & Country Club	nordcenter.fi	https://api.nordcenter.fi/api/1.0	https://ajax.nordcenter.fi	ums7DCgz4rttvpmCf
-50	oulugolf	Oulun Golfkerho	oulugolf.fi	https://api.oulugolf.fi/api/1.0	https://ajax.oulugolf.fi	rdmdy2DgfOGcWnKG
-107	kullogolf	Kullo Golf Club	kullogolf.fi	https://api.kullogolf.fi/api/1.0	https://ajax.kullogolf.fi	rdmdy2DgKUbcWnKG
-78	tammergolf	Tammer-Golf	tammer-golf.fi	https://api.tammer-golf.fi/api/1.0	https://ajax.tammer-golf.fi	ums7DCgz4NevpmCK
-116	linnagolf	Vanajanlinna Golf & Country Club	linnagolf.fi	https://api.linnagolf.fi/api/1.0	https://ajax.linnagolf.fi	Dkh9jsdGGNFyNrcU
-37	peurunkagolf	Laukaan Peurunkagolf	lpg.fi	https://api.lpg.fi/api/1.0	https://ajax.lpg.fi	J5mYZecGUX4LPGwW
-33	kurkgolf	Kurk Golf	kurkgolf.fi	https://api.kurkgolf.fi/api/1.0	https://ajax.kurkgolf.fi	rfnIndemidbeIEdbhfEuh
-145	smartgolf	Smart Golf Ry	kurkgolf.fi	https://api.kurkgolf.fi/api/1.0	https://ajax.kurkgolf.fi	rfnIndemidbeIEdbhfEuh
-54	peuramaagolf	Peuramaa Golf Hjortlandet	peuramaagolf.fi	https://api.peuramaagolf.fi/api/1.0	https://ajax.peuramaagolf.fi	cMLTfNeMRNvrRC6K
-110	hillside	Hill Side Golf	hillside.fi	https://api.hillside.fi/api/1.0	https://ajax.hillside.fi	cMLTfNeMRNvHIL6K
-8	ruuhikoskigolf	Ruuhikoski Golf Seinäjoki	ruuhikoskigolf.fi	https://api.ruuhikoskigolf.fi/api/1.0	https://ajax.ruuhikoskigolf.fi	C3gRnGcoUxGtF9rC
-32	koskigolf	Koskigolf	koskigolf.fi	https://api.koskigolf.fi/api/1.0	https://ajax.koskigolf.fi	IKETChKosAh6Pahh
-12	gumbolegolf	Gumböle Golf	espoogolf.fi	https://api.espoogolf.fi/api/1.0	https://ajax.espoogolf.fi	wHdsEqSGUMcznzYB
-6	espoogolf	Espoon Golfseura	espoogolf.fi	https://api.espoogolf.fi/api/1.0	https://ajax.espoogolf.fi	wHdsEqSGUMcznzYB
-86	vierumakigolf	Vierumäki Golf	vierumakigolf.fi	https://api.vierumakigolf.fi/api/1.0	https://ajax.vierumakigolf.fi	ARzexdAFVigs7sJS
-109	hattulagolf	Hattula Golf	hattulagolf.fi	https://api.hattulagolf.fi/api/1.0	https://ajax.hattulagolf.fi	EjDekmdediNDdEdbhfEuh
-52	paltamogolf	Paltamo Golf	paltamogolf.fi	https://api.paltamogolf.fi/api/1.0	https://ajax.paltamogolf.fi	rfnEDinmEojdEdbhfEuh
-88	virvikgolf	Virvik Golf	virvikgolf.fi	https://api.virvikgolf.fi/api/1.0	https://ajax.virvikgolf.fi	EjDjnneidbeIEdbhfEuh
-120	puulagolf	PuulaGolf	puulagolf.fi	https://api.puulagolf.fi/api/1.0	https://ajax.puulagolf.fi	EjDjnneidbeIEdbhfEuh
-26	kareliagolf	Karelia Golf	kareliagolf.fi	https://api.kareliagolf.fi/api/1.0	https://ajax.kareliagolf.fi	EjDjnneidbeIEdbhfEuh
-111	hirsalagolf	Hirsala Golf	hirsalagolf.fi	https://api.hirsalagolf.fi/api/1.0	https://ajax.hirsalagolf.fi	rjsnnneidbeIEdbhfEuh
-56	pielisgolf	Pielis-Golf	pielisgolf.fi	https://api.pielisgolf.fi/api/1.0	https://ajax.pielisgolf.fi	erkmDEikmzL6Dg
-118	hirvihaara	Hirvihaaran Golf Mäntsälä	hirvihaarangolf.fi	https://api.hirvihaarangolf.fi/api/1.0	https://ajax.hirvihaarangolf.fi	38nDWkdfmeidf)SvAQw
-46	nevasgolf	Nevas Golf	nevasgolf.fi	https://api.nevasgolf.fi/api/1.0	https://ajax.nevasgolf.fi	rjsnAseidDOsICdbhfEuh
-117	aurinkogolf	Aurinko Golf	aurinkogolf.fi	https://api.aurinkogolf.fi/api/1.0	https://ajax.aurinkogolf.fi	4rk49mnfkfrOsICdbhfEuh
-81	ugk	Uudenkaupungin Golfklubi	ugk.fi	https://api.ugk.fi/api/1.0	https://ajax.ugk.fi	EjDjnneidbeIEdbhfUGK
-72	seagolf	Sea Golf Rönnäs	seagolf.fi	https://api.seagolf.fi/api/1.0	https://ajax.seagolf.fi	rejnneidbeIEdbhfEuh
-27	kartanogolf	Kartanogolf	kartanogolf.fi	https://api.kartanogolf.fi/api/1.0	https://ajax.kartanogolf.fi	EjDjnneidbeIEdbhfKAR
-49	nurmijarvigolf	Nurmijärvi Golf	nurmijarvigolf.fi	https://api.nurmijarvigolf.fi/api/1.0	https://ajax.nurmijarvigolf.fi	EjDjnneidbeIEdbhfEuh
-89	wgcc	Wiurila Golf & Country Club	wgcc.fi	https://api.wgcc.fi/api/1.0	https://ajax.wgcc.fi	EjDjnneidbeIEdbhfEuh
-51	ogs	Outokummun Golfseura	ogs.fi	https://api.ogs.fi/api/1.0	https://ajax.ogs.fi	EjDjnneidbeIEdbhfOGS
-45	mikkelingolf	Mikkelin Golf	mikkelingolf.fi	https://api.mikkelingolf.fi/api/1.0	https://ajax.mikkelingolf.fi	AjDjnngtypeIcdbhfSul
-25	kalajokigolf	Kalajoki Golf	kalajokigolf.fi	https://api.kalajokigolf.fi/api/1.0	https://ajax.kalajokigolf.fi	EjDjkleidbeILdaghfEuh
-106	eerikkalagolf	Eerikkala Golf	eerikkalagolf.fi	https://api.eerikkalagolf.fi/api/1.0	https://ajax.eerikkalagolf.fi	JWnowdbeIEdbhfEuh
-1	anolagolf	Anola Golf	anolagolf.fi	https://api.anolagolf.fi/api/1.0	https://ajax.anolagolf.fi	kfmro/h32onIEdbhfEuh
-35	kymengolf	Kymen Golf	kymengolf.fi	https://api.kymengolf.fi/api/1.0	https://ajax.kymengolf.fi	rjnsjnmJddbeIEdbhfEuh
-20	imatrangolf	Imatran Golf	imatrangolf.fi	https://api.imatrangolf.fi/api/1.0	https://ajax.imatrangolf.fi	ejmnOIejdbeIEdbhfEuh
-42	torniogolf	Green Zone Golf	greenzonegolf.com	https://api.greenzonegolf.com/api/1.0	https://ajax.greenzonegolf.com	JKLniIejdalDihbhfEfa
-40	kemingolf	Kemin Golf Klubi	kemingolf.fi	https://api.kemingolf.fi/api/1.0	https://ajax.kemingolf.fi	X3EzSGrXUEXMRpUA
-60	tarinagolf	Tarinagolf	tarinagolf.fi	https://api.tarinagolf.fi/api/1.0	https://ajax.tarinagolf.fi	5V2YQnJJ5VPBzURM
-82	vaasangolf	Vaasan Golf Ry	vaasangolf.fi	https://api.vaasangolf.fi/api/1.0	https://ajax.vaasangolf.fi	EkjrmdidbeIEdbhfEuh
-125	alastarogolf	Alastaron Golf	alastarogolf.fi	https://api.alastarogolf.fi/api/1.0	https://ajax.alastarogolf.fi	kSgEt97My22Hq6Sn
-95	nivalanseudungolf	Nivalan Seudun Golf	nivalanseudungolf.fi	https://api.nivalanseudungolf.fi/api/1.0	https://ajax.nivalanseudungolf.fi	EjDjnneidbeIEdbhfNGS
-39	loimijokigolf	Loimijoki Golf	loimijokigolf.fi	https://api.loimijokigolf.fi/api/1.0	https://ajax.loimijokigolf.fi	EjDjnneidbeIEdbhfLOI
-129	ekegolf	Eke Golf ry	ekegolf.fi	https://api.ekegolf.fi/api/1.0	https://ajax.ekegolf.fi	qMsUyU7sYdLMhkLa
-93	ahtaringolf	Ähtärin Golf	ahtaringolf.fi	https://api.ahtaringolf.fi/api/1.0	https://ajax.ahtaringolf.fi	EjDjnneidbeIEdbhfEuh
-9	annilangolfkeskus	Golf-Porrassalmi	annilangolfkeskus.fi	https://api.annilangolfkeskus.fi/api/1.0	https://ajax.annilangolfkeskus.fi	aYMWkXWWHezTPb2w
-137	kotoclub	Koto Golf	kotoclub.fi	https://api.kotoclub.fi/api/1.0	https://ajax.kotoclub.fi	mUeWJhQ7Kk2W8vub
-149	pickalarock	Rock Golf	rockgolf.fi	https://api.rockgolf.fi/api/1.0	https://ajax.rockgolf.fi	EjDjxdd5566GdbeIEdbhfEuh
-122	levigolf	Levi Golf	levigolf.fi	https://api.levigolf.fi/api/1.0	https://ajax.levigolf.fi	sNsKg6EMdprggeHT
-134	tapiolagolf	Tapiola Golf	tapiolagolf.fi	https://api.tapiolagolf.fi/api/1.0	https://ajax.tapiolagolf.fi	MWGtKfZqRad7yZ3T
-44	messilagolf	Messilän Golf	messilagolf.fi	https://api.messilagolf.fi/api/1.0	https://ajax.messilagolf.fi	GbY3LMmQNfVg7Frt
-55	pickalagolf	Pickala Golf Club	pickalagolf.fi	https://api.pickalagolf.fi/api/1.0	https://ajax.pickalagolf.fi	KPz9769UpbtsW4TN
-10	golftalma	Golf Talma	golftalma.fi	https://api.golftalma.fi/api/1.0	https://ajax.golftalma.fi	42tbFnQzrynBUHnC
-11	golfvirrat	Golf-Virrat	golfvirrat.fi	https://api.golfvirrat.fi/api/1.0	https://ajax.golfvirrat.fi	TjqRHVRKC9Rt3Wrz
-68	ruukkigolf	Ruukkigolf	ruukkigolf.fi	https://api.ruukkigolf.fi/api/1.0	https://ajax.ruukkigolf.fi	vvuDFRwvucP3QvxM
-36	lahdengolf	Lahden Golf	lahdengolf.fi	https://api.lahdengolf.fi/api/1.0	https://ajax.lahdengolf.fi	eMUfnUvwp4jph7kk
-41	mastergolf	Master Golf Club	mastergolf.fi	https://api.mastergolf.fi/api/1.0	https://ajax.mastergolf.fi	yawfxQbgJAxLU4FU
-4	auragolf	Aura Golf	auragolf.fi	https://api.auragolf.fi/api/1.0	https://ajax.auragolf.fi	GBTPmapKgP6k7L8J
-13	hangolf	HanGolf	hangolf.fi	https://api.hangolf.fi/api/1.0	https://ajax.hangolf.fi	h95TP7zE322s7unX
-43	meriteijogolf	Meri-Teijo Golf	meriteijogolf.com	https://api.meriteijogolf.com/api/1.0	https://ajax.meriteijogolf.com	hyVTNYNPZEZkKzSB
-65	porvoogolf	Porvoo Golf - Borgå Golf	porvoogolf.fi	https://api.porvoogolf.fi/api/1.0	https://ajax.porvoogolf.fi	rtUyM4XxQRf4knN4
-90	ysg	Ylä-Savon Golfseura	ysg.fi	https://api.ysg.fi/api/1.0	https://ajax.ysg.fi	Z665DfJEXWqYQW69
-102	kuortanegolf	Kuortane Golf	kuortanegolf.fi	https://api.kuortanegolf.fi/api/1.0	https://ajax.kuortanegolf.fi	qLLNDwaT7cKKZLRs
-127	kultarantaresort	Kultaranta Golf 	kultarantagolf.fi	https://api.kultarantagolf.fi/api/1.0	https://ajax.kultarantagolf.fi	N3eDQQKqac8hU6aY
-30	kokkolangolf	Kokkolan Golf 	kokkolangolf.fi	https://api.kokkolangolf.fi/api/1.0	https://ajax.kokkolangolf.fi	tcrhv54FeSEEj2e9
-74	archipelagiagolf	Archipelagia Golf	archipelagiagolf.fi	https://api.archipelagiagolf.fi/api/1.0	https://ajax.archipelagiagolf.fi	6WD9N55zQAqdFVTV
-3	aulankogolf	Aulanko Golf	aulankogolf.fi	https://api.aulankogolf.fi/api/1.0	https://ajax.aulankogolf.fi	mMuafNfh9ZgxsSGr
-79	tawastgolf	Tawast Golf	tawastgolf.fi	https://api.tawastgolf.fi/api/1.0	https://ajax.tawastgolf.fi	aQnkSLKTR4Bapk9g
-5	botniagolf	Botnia Golf	botniagolf.com	https://api.botniagolf.com/api/1.0	https://ajax.botniagolf.com	g3apFMnKwqkftHXS
-124	virpiniemigolf	Virpiniemi Golf 	virpiniemigolf.fi	https://api.virpiniemigolf.fi/api/1.0	https://ajax.virpiniemigolf.fi	USQwmjJk8rB4ZEBQ
-76	stlg	St. Laurence Golf	stlg.fi	https://api.stlg.fi/api/1.0	https://ajax.stlg.fi	rjnDi4he8hfbDiuhgth
-57	jpggolf	Jakobstads Golf – Pietarsaaren Golf	jpggolf.fi	https://api.jpggolf.fi/api/1.0	https://ajax.jpggolf.fi	rjnDb5u37hDhtgijD
-113	revontuligolf	Revontuli Golf	revontuligolf.fi	https://api.revontuligolf.fi/api/1.0	https://ajax.revontuligolf.fi	rDIjhti38jDrgjkDkirtj
-29	kerigolf	KeriGolf	kerigolf.fi	https://api.kerigolf.fi/api/1.0	https://ajax.kerigolf.fi	JDnrhfnDubnfruNSDuj
-99	vuosaarigolf	Vuosaari Golf	vuosaarigolf.fi	https://api.vuosaarigolf.fi/api/1.0	https://ajax.vuosaarigolf.fi	Kejj38NDjrfiJNDe
-28	katinkultagolf	Katinkulta Golf	katinkultagolf.fi	https://api.katinkultagolf.fi/api/1.0	https://ajax.katinkultagolf.fi	MCdjrfnJD83jDrgfuJDj
-87	viipuringolf	Viipurin Golf	viipuringolf.fi	https://api.viipuringolf.fi/api/1.0	https://ajax.viipuringolf.fi	EinDjr58HDkrjgtfj
-61	rtg	Raahentienoon Golf	rtg.fi	https://api.rtg.fi/api/1.0	https://ajax.rtg.fi	DMrij38(jDjhrfhEDIjD
-15	helsingingolfklubi	Helsingin Golfklubi	helsingingolfklubi.fi	https://api.helsingingolfklubi.fi/api/1.0	https://ajax.helsingingolfklubi.fi	Mdcij48NDjtgiJEDij
-71	rantasalmigolf	Rantasalmi Golf	rantasalmigolf.fi	https://api.rantasalmigolf.fi/api/1.0	https://ajax.rantasalmigolf.fi	Dmrijm389JDikrgnfk
-16	hieg	Hiekkaharju Golf 	hieg.fi	https://api.hieg.fi/api/1.0	https://ajax.hieg.fi	EjDjnneidbeIEdbhfEuh
-73	harjattulagolf	Harjattula Golf 	harjattulagolf.fi	https://api.harjattulagolf.fi/api/1.0	https://ajax.harjattulagolf.fi	EDn38DJhrfh(EJDhfjue
-130	kaakongolf	Kaakon Golf	kaakongolf.fi	https://api.kaakongolf.fi/api/1.0	https://ajax.kaakongolf.fi	EjDjnneidbeIEdbhfEuh
-132	hcgolf	Holiday Club Saimaa	hcgolf.fi	https://api.hcgolf.fi/api/1.0	https://ajax.hcgolf.fi	RnDCIjh38NDjrfuIDj
-67	kuusamogolf	Holiday Club Kuusamo	kuusamogolf.fi	https://api.kuusamogolf.fi/api/1.0	https://ajax.kuusamogolf.fi	Ehn3jE8€jNJDiRHEkJWk
-99991	seasongolf	Season Golf	seasongolf.fi	https://api.seasongolf.fi/api/1.0	https://ajax.seasongolf.fi	rdmdy2DgfcbcWpTB
-99992	oulungolfhalli	Oulun golfhalli	oulungolfhalli.fi	https://api.oulungolfhalli.fi/api/1.0	https://ajax.oulungolfhalli.fi	5TmX0A8F70MASvAQw
-99992	mulliganlounge	Mulligan Lounge	mulliganlounge.fi	https://api.mulliganlounge.fi/api/1.0	https://ajax.mulliganlounge.fi	5TmX0A8F70MULvAQw
-99992	vantaankoskengolfhalli	Vantaankosken Golfhalli	vantaankoskengolfhalli.fi	https://api.vantaankoskengolfhalli.fi/api/1.0	https://ajax.vantaankoskengolfhalli.fi	U8K4jdYqwFxhU45BN
+golf_club_id	name	display_name	domain	rest_url	ajax_url
+99999	wisegolfclub	WiseGolf vieraspelaajat	wisegolfclub.fi	https://api.wisegolfclub.fi/api/1.0	https://ajax.wisegolfclub.fi
+99998	wnw	WNW	wnw.fi	https://api.wnw.fi/api/1.0	https://ajax.wnw.fi
+91	yyterigolf	Yyteri Golf	yyterigolf.fi	https://api.yyterigolf.fi/api/1.0	https://ajax.yyterigolf.fi
+59	kalafornia	Porin Golfkerho	kalafornia.com	https://api.kalafornia.com/api/1.0	https://ajax.kalafornia.com
+18	hyvigolf	Hyvinkään Golf	hyvigolf.fi	https://api.hyvigolf.fi/api/1.0	https://ajax.hyvigolf.fi
+62	kankaistengolf	Kankaisten Golf	kgm.fi	https://api.kgm.fi/api/1.0	https://ajax.kgm.fi
+66	rivergolf	Nokia River Golf	nokiarivergolf.fi	https://api.nokiarivergolf.fi/api/1.0	https://ajax.nokiarivergolf.fi
+23	jarviseudungolf	Järviseudun Golfseura	jgs.fi	https://api.jgs.fi/api/1.0	https://ajax.jgs.fi
+105	iittigolf	Iitti Golf	iittigolf.com	https://api.iittigolf.com/api/1.0	https://ajax.iittigolf.com
+77	shg	Suur-Helsingin Golf	shg.fi	https://api.shg.fi/api/1.0	https://ajax.shg.fi
+14	hartolagolf	Hartolan Golfklubi	hartolagolf.com	https://api.hartolagolf.com/api/1.0	https://ajax.hartolagolf.com
+108	kytajagolf	Kytäjä Golf	kytajagolf.fi	https://api.kytajagolf.fi/api/1.0	https://ajax.kytajagolf.fi
+84	keimolagolf	Keimola Golf	keimolagolf.com	https://api.keimolagolf.com/api/1.0	https://ajax.keimolagolf.com
+115	kanavagolf	Kanavagolf Vääksy	kanavagolf.com	https://api.kanavagolf.com/api/1.0	https://ajax.kanavagolf.com
+80	tgk	Tuusulan Golfklubi	tgk.fi	https://api.tgk.fi/api/1.0	https://ajax.tgk.fi
+7	ringsidegolf	Espoo Ringside Golf	ringsidegolf.fi	https://api.ringsidegolf.fi/api/1.0	https://ajax.ringsidegolf.fi
+63	raumagolf	Rauma Golf	raumagolf.fi	https://api.raumagolf.fi/api/1.0	https://ajax.raumagolf.fi
+83	lakesidegolf	Lakeside Golf Vammala	lakesidegolf.fi	https://api.lakesidegolf.fi/api/1.0	https://ajax.lakesidegolf.fi
+64	muuramegolf	Muuramen Golfseura	muuramegolf.fi	https://api.muuramegolf.fi/api/1.0	https://ajax.muuramegolf.fi
+104	golfpirkkala	Golf Pirkkala	golfpirkkala.fi	https://api.golfpirkkala.fi/api/1.0	https://ajax.golfpirkkala.fi
+47	tahkogolf	Tahko Golf	tahkogolf.fi	https://api.tahkogolf.fi/api/1.0	https://ajax.tahkogolf.fi
+48	nordcenter	Nordcenter Golf & Country Club	nordcenter.fi	https://api.nordcenter.fi/api/1.0	https://ajax.nordcenter.fi
+50	oulugolf	Oulun Golfkerho	oulugolf.fi	https://api.oulugolf.fi/api/1.0	https://ajax.oulugolf.fi
+107	kullogolf	Kullo Golf Club	kullogolf.fi	https://api.kullogolf.fi/api/1.0	https://ajax.kullogolf.fi
+78	tammergolf	Tammer-Golf	tammer-golf.fi	https://api.tammer-golf.fi/api/1.0	https://ajax.tammer-golf.fi
+116	linnagolf	Vanajanlinna Golf & Country Club	linnagolf.fi	https://api.linnagolf.fi/api/1.0	https://ajax.linnagolf.fi
+37	peurunkagolf	Laukaan Peurunkagolf	lpg.fi	https://api.lpg.fi/api/1.0	https://ajax.lpg.fi
+33	kurkgolf	Kurk Golf	kurkgolf.fi	https://api.kurkgolf.fi/api/1.0	https://ajax.kurkgolf.fi
+145	smartgolf	Smart Golf Ry	kurkgolf.fi	https://api.kurkgolf.fi/api/1.0	https://ajax.kurkgolf.fi
+54	peuramaagolf	Peuramaa Golf Hjortlandet	peuramaagolf.fi	https://api.peuramaagolf.fi/api/1.0	https://ajax.peuramaagolf.fi
+110	hillside	Hill Side Golf	hillside.fi	https://api.hillside.fi/api/1.0	https://ajax.hillside.fi
+8	ruuhikoskigolf	Ruuhikoski Golf Seinäjoki	ruuhikoskigolf.fi	https://api.ruuhikoskigolf.fi/api/1.0	https://ajax.ruuhikoskigolf.fi
+32	koskigolf	Koskigolf	koskigolf.fi	https://api.koskigolf.fi/api/1.0	https://ajax.koskigolf.fi
+12	gumbolegolf	Gumböle Golf	espoogolf.fi	https://api.espoogolf.fi/api/1.0	https://ajax.espoogolf.fi
+6	espoogolf	Espoon Golfseura	espoogolf.fi	https://api.espoogolf.fi/api/1.0	https://ajax.espoogolf.fi
+86	vierumakigolf	Vierumäki Golf	vierumakigolf.fi	https://api.vierumakigolf.fi/api/1.0	https://ajax.vierumakigolf.fi
+109	hattulagolf	Hattula Golf	hattulagolf.fi	https://api.hattulagolf.fi/api/1.0	https://ajax.hattulagolf.fi
+52	paltamogolf	Paltamo Golf	paltamogolf.fi	https://api.paltamogolf.fi/api/1.0	https://ajax.paltamogolf.fi
+88	virvikgolf	Virvik Golf	virvikgolf.fi	https://api.virvikgolf.fi/api/1.0	https://ajax.virvikgolf.fi
+120	puulagolf	PuulaGolf	puulagolf.fi	https://api.puulagolf.fi/api/1.0	https://ajax.puulagolf.fi
+26	kareliagolf	Karelia Golf	kareliagolf.fi	https://api.kareliagolf.fi/api/1.0	https://ajax.kareliagolf.fi
+111	hirsalagolf	Hirsala Golf	hirsalagolf.fi	https://api.hirsalagolf.fi/api/1.0	https://ajax.hirsalagolf.fi
+56	pielisgolf	Pielis-Golf	pielisgolf.fi	https://api.pielisgolf.fi/api/1.0	https://ajax.pielisgolf.fi
+118	hirvihaara	Hirvihaaran Golf Mäntsälä	hirvihaarangolf.fi	https://api.hirvihaarangolf.fi/api/1.0	https://ajax.hirvihaarangolf.fi
+46	nevasgolf	Nevas Golf	nevasgolf.fi	https://api.nevasgolf.fi/api/1.0	https://ajax.nevasgolf.fi
+117	aurinkogolf	Aurinko Golf	aurinkogolf.fi	https://api.aurinkogolf.fi/api/1.0	https://ajax.aurinkogolf.fi
+81	ugk	Uudenkaupungin Golfklubi	ugk.fi	https://api.ugk.fi/api/1.0	https://ajax.ugk.fi
+72	seagolf	Sea Golf Rönnäs	seagolf.fi	https://api.seagolf.fi/api/1.0	https://ajax.seagolf.fi
+27	kartanogolf	Kartanogolf	kartanogolf.fi	https://api.kartanogolf.fi/api/1.0	https://ajax.kartanogolf.fi
+49	nurmijarvigolf	Nurmijärvi Golf	nurmijarvigolf.fi	https://api.nurmijarvigolf.fi/api/1.0	https://ajax.nurmijarvigolf.fi
+89	wgcc	Wiurila Golf & Country Club	wgcc.fi	https://api.wgcc.fi/api/1.0	https://ajax.wgcc.fi
+51	ogs	Outokummun Golfseura	ogs.fi	https://api.ogs.fi/api/1.0	https://ajax.ogs.fi
+45	mikkelingolf	Mikkelin Golf	mikkelingolf.fi	https://api.mikkelingolf.fi/api/1.0	https://ajax.mikkelingolf.fi
+25	kalajokigolf	Kalajoki Golf	kalajokigolf.fi	https://api.kalajokigolf.fi/api/1.0	https://ajax.kalajokigolf.fi
+106	eerikkalagolf	Eerikkala Golf	eerikkalagolf.fi	https://api.eerikkalagolf.fi/api/1.0	https://ajax.eerikkalagolf.fi
+1	anolagolf	Anola Golf	anolagolf.fi	https://api.anolagolf.fi/api/1.0	https://ajax.anolagolf.fi
+35	kymengolf	Kymen Golf	kymengolf.fi	https://api.kymengolf.fi/api/1.0	https://ajax.kymengolf.fi
+20	imatrangolf	Imatran Golf	imatrangolf.fi	https://api.imatrangolf.fi/api/1.0	https://ajax.imatrangolf.fi
+42	torniogolf	Green Zone Golf	greenzonegolf.com	https://api.greenzonegolf.com/api/1.0	https://ajax.greenzonegolf.com
+40	kemingolf	Kemin Golf Klubi	kemingolf.fi	https://api.kemingolf.fi/api/1.0	https://ajax.kemingolf.fi
+60	tarinagolf	Tarinagolf	tarinagolf.fi	https://api.tarinagolf.fi/api/1.0	https://ajax.tarinagolf.fi
+82	vaasangolf	Vaasan Golf Ry	vaasangolf.fi	https://api.vaasangolf.fi/api/1.0	https://ajax.vaasangolf.fi
+125	alastarogolf	Alastaron Golf	alastarogolf.fi	https://api.alastarogolf.fi/api/1.0	https://ajax.alastarogolf.fi
+95	nivalanseudungolf	Nivalan Seudun Golf	nivalanseudungolf.fi	https://api.nivalanseudungolf.fi/api/1.0	https://ajax.nivalanseudungolf.fi
+39	loimijokigolf	Loimijoki Golf	loimijokigolf.fi	https://api.loimijokigolf.fi/api/1.0	https://ajax.loimijokigolf.fi
+129	ekegolf	Eke Golf ry	ekegolf.fi	https://api.ekegolf.fi/api/1.0	https://ajax.ekegolf.fi
+93	ahtaringolf	Ähtärin Golf	ahtaringolf.fi	https://api.ahtaringolf.fi/api/1.0	https://ajax.ahtaringolf.fi
+9	annilangolfkeskus	Golf-Porrassalmi	annilangolfkeskus.fi	https://api.annilangolfkeskus.fi/api/1.0	https://ajax.annilangolfkeskus.fi
+137	kotoclub	Koto Golf	kotoclub.fi	https://api.kotoclub.fi/api/1.0	https://ajax.kotoclub.fi
+149	pickalarock	Rock Golf	rockgolf.fi	https://api.rockgolf.fi/api/1.0	https://ajax.rockgolf.fi
+122	levigolf	Levi Golf	levigolf.fi	https://api.levigolf.fi/api/1.0	https://ajax.levigolf.fi
+134	tapiolagolf	Tapiola Golf	tapiolagolf.fi	https://api.tapiolagolf.fi/api/1.0	https://ajax.tapiolagolf.fi
+44	messilagolf	Messilän Golf	messilagolf.fi	https://api.messilagolf.fi/api/1.0	https://ajax.messilagolf.fi
+55	pickalagolf	Pickala Golf Club	pickalagolf.fi	https://api.pickalagolf.fi/api/1.0	https://ajax.pickalagolf.fi
+10	golftalma	Golf Talma	golftalma.fi	https://api.golftalma.fi/api/1.0	https://ajax.golftalma.fi
+11	golfvirrat	Golf-Virrat	golfvirrat.fi	https://api.golfvirrat.fi/api/1.0	https://ajax.golfvirrat.fi
+68	ruukkigolf	Ruukkigolf	ruukkigolf.fi	https://api.ruukkigolf.fi/api/1.0	https://ajax.ruukkigolf.fi
+36	lahdengolf	Lahden Golf	lahdengolf.fi	https://api.lahdengolf.fi/api/1.0	https://ajax.lahdengolf.fi
+41	mastergolf	Master Golf Club	mastergolf.fi	https://api.mastergolf.fi/api/1.0	https://ajax.mastergolf.fi
+4	auragolf	Aura Golf	auragolf.fi	https://api.auragolf.fi/api/1.0	https://ajax.auragolf.fi
+13	hangolf	HanGolf	hangolf.fi	https://api.hangolf.fi/api/1.0	https://ajax.hangolf.fi
+43	meriteijogolf	Meri-Teijo Golf	meriteijogolf.com	https://api.meriteijogolf.com/api/1.0	https://ajax.meriteijogolf.com
+65	porvoogolf	Porvoo Golf - Borgå Golf	porvoogolf.fi	https://api.porvoogolf.fi/api/1.0	https://ajax.porvoogolf.fi
+90	ysg	Ylä-Savon Golfseura	ysg.fi	https://api.ysg.fi/api/1.0	https://ajax.ysg.fi
+102	kuortanegolf	Kuortane Golf	kuortanegolf.fi	https://api.kuortanegolf.fi/api/1.0	https://ajax.kuortanegolf.fi
+127	kultarantaresort	Kultaranta Golf 	kultarantagolf.fi	https://api.kultarantagolf.fi/api/1.0	https://ajax.kultarantagolf.fi
+30	kokkolangolf	Kokkolan Golf 	kokkolangolf.fi	https://api.kokkolangolf.fi/api/1.0	https://ajax.kokkolangolf.fi
+74	archipelagiagolf	Archipelagia Golf	archipelagiagolf.fi	https://api.archipelagiagolf.fi/api/1.0	https://ajax.archipelagiagolf.fi
+3	aulankogolf	Aulanko Golf	aulankogolf.fi	https://api.aulankogolf.fi/api/1.0	https://ajax.aulankogolf.fi
+79	tawastgolf	Tawast Golf	tawastgolf.fi	https://api.tawastgolf.fi/api/1.0	https://ajax.tawastgolf.fi
+5	botniagolf	Botnia Golf	botniagolf.com	https://api.botniagolf.com/api/1.0	https://ajax.botniagolf.com
+124	virpiniemigolf	Virpiniemi Golf 	virpiniemigolf.fi	https://api.virpiniemigolf.fi/api/1.0	https://ajax.virpiniemigolf.fi
+76	stlg	St. Laurence Golf	stlg.fi	https://api.stlg.fi/api/1.0	https://ajax.stlg.fi
+57	jpggolf	Jakobstads Golf – Pietarsaaren Golf	jpggolf.fi	https://api.jpggolf.fi/api/1.0	https://ajax.jpggolf.fi
+113	revontuligolf	Revontuli Golf	revontuligolf.fi	https://api.revontuligolf.fi/api/1.0	https://ajax.revontuligolf.fi
+29	kerigolf	KeriGolf	kerigolf.fi	https://api.kerigolf.fi/api/1.0	https://ajax.kerigolf.fi
+99	vuosaarigolf	Vuosaari Golf	vuosaarigolf.fi	https://api.vuosaarigolf.fi/api/1.0	https://ajax.vuosaarigolf.fi
+28	katinkultagolf	Katinkulta Golf	katinkultagolf.fi	https://api.katinkultagolf.fi/api/1.0	https://ajax.katinkultagolf.fi
+87	viipuringolf	Viipurin Golf	viipuringolf.fi	https://api.viipuringolf.fi/api/1.0	https://ajax.viipuringolf.fi
+61	rtg	Raahentienoon Golf	rtg.fi	https://api.rtg.fi/api/1.0	https://ajax.rtg.fi
+15	helsingingolfklubi	Helsingin Golfklubi	helsingingolfklubi.fi	https://api.helsingingolfklubi.fi/api/1.0	https://ajax.helsingingolfklubi.fi
+71	rantasalmigolf	Rantasalmi Golf	rantasalmigolf.fi	https://api.rantasalmigolf.fi/api/1.0	https://ajax.rantasalmigolf.fi
+16	hieg	Hiekkaharju Golf 	hieg.fi	https://api.hieg.fi/api/1.0	https://ajax.hieg.fi
+73	harjattulagolf	Harjattula Golf 	harjattulagolf.fi	https://api.harjattulagolf.fi/api/1.0	https://ajax.harjattulagolf.fi
+130	kaakongolf	Kaakon Golf	kaakongolf.fi	https://api.kaakongolf.fi/api/1.0	https://ajax.kaakongolf.fi
+132	hcgolf	Holiday Club Saimaa	hcgolf.fi	https://api.hcgolf.fi/api/1.0	https://ajax.hcgolf.fi
+67	kuusamogolf	Holiday Club Kuusamo	kuusamogolf.fi	https://api.kuusamogolf.fi/api/1.0	https://ajax.kuusamogolf.fi
+99991	seasongolf	Season Golf	seasongolf.fi	https://api.seasongolf.fi/api/1.0	https://ajax.seasongolf.fi
+99992	oulungolfhalli	Oulun golfhalli	oulungolfhalli.fi	https://api.oulungolfhalli.fi/api/1.0	https://ajax.oulungolfhalli.fi
+99992	mulliganlounge	Mulligan Lounge	mulliganlounge.fi	https://api.mulliganlounge.fi/api/1.0	https://ajax.mulliganlounge.fi
+99992	vantaankoskengolfhalli	Vantaankosken Golfhalli	vantaankoskengolfhalli.fi	https://api.vantaankoskengolfhalli.fi/api/1.0	https://ajax.vantaankoskengolfhalli.fi
