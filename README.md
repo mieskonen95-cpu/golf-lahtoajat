@@ -23,6 +23,14 @@ python3 -m teetimes search huomenna -p 2 --show-closed
 
 Day can be `2026-05-16`, `16.5.`, `ma`…`su`, `tänään` or `huomenna`.
 
+## Hosting on Render (for phone use)
+
+`render.yaml` sets up a free Render web service. In Render: **New → Blueprint**,
+connect this GitHub repo, pick the branch, and apply. Render then redeploys on
+every push. On the phone, open the `…onrender.com` address and use
+"Add to Home Screen". The free tier sleeps when idle, so the first search
+after a break takes longer.
+
 ## What counts as a match
 
 | Players | Needs |

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 
 from .clubs import load_hosts
@@ -39,8 +40,9 @@ def main(argv=None) -> int:
     s.add_argument("--max-gap", type=int, help="isolle ryhmälle: suurin väli lähtöjen välillä (min)")
     s.add_argument("--show-closed", action="store_true", help="näytä myös suljetut kalenterit")
     v = sub.add_parser("serve", help="käynnistä selainkäyttöliittymä")
-    v.add_argument("--port", type=int, default=8000)
-    v.add_argument("--host", default="127.0.0.1")
+    # Hosting services (e.g. Render) pass the port in $PORT and need 0.0.0.0.
+    v.add_argument("--port", type=int, default=int(os.environ.get("PORT", 8000)))
+    v.add_argument("--host", default="0.0.0.0" if "PORT" in os.environ else "127.0.0.1")
     args = ap.parse_args(argv)
 
     if args.cmd == "serve":

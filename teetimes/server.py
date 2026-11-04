@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import threading
 from dataclasses import asdict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -13,6 +14,10 @@ from .search import filter_hosts, now_local, search
 
 PAGE = Path(__file__).with_name("static") / "index.html"
 MAX_PLAYERS = 16
+# A public deployment shouldn't flood the clubs' servers: run at most this many
+# searches at once (each one already queries all clubs in parallel).
+MAX_CONCURRENT_SEARCHES = 2
+_search_slots = threading.BoundedSemaphore(MAX_CONCURRENT_SEARCHES)
 
 
 def run_search(qs: dict[str, str]) -> dict:
@@ -46,17 +51,27 @@ class Handler(BaseHTTPRequestHandler):
         url = urlparse(self.path)
         if url.path == "/":
             self._send(200, PAGE.read_bytes(), "text/html; charset=utf-8")
+        elif url.path == "/healthz":
+            self._send(200, b"ok", "text/plain")
         elif url.path == "/api/search":
             qs = {k: v[0] for k, v in parse_qs(url.query).items()}
+            if not _search_slots.acquire(blocking=False):
+                self._json(429, {"error": "Palvelin on kiireinen, yritä hetken päästä uudelleen."})
+                return
             try:
-                body = run_search(qs)
-                self._send(200, json.dumps(body, ensure_ascii=False).encode(),
-                           "application/json; charset=utf-8")
-            except (ValueError, Exception) as e:  # bad input or upstream failure
-                self._send(400, json.dumps({"error": str(e)}, ensure_ascii=False).encode(),
-                           "application/json; charset=utf-8")
+                self._json(200, run_search(qs))
+            except ValueError as e:
+                self._json(400, {"error": str(e)})
+            except Exception as e:  # upstream failure
+                self._json(502, {"error": f"Haku epäonnistui: {e}"})
+            finally:
+                _search_slots.release()
         else:
             self._send(404, b"not found", "text/plain")
+
+    def _json(self, code: int, body: dict):
+        self._send(code, json.dumps(body, ensure_ascii=False).encode(),
+                   "application/json; charset=utf-8")
 
     def _send(self, code: int, body: bytes, ctype: str):
         self.send_response(code)
@@ -72,7 +87,7 @@ class Handler(BaseHTTPRequestHandler):
 
 def serve(host: str = "127.0.0.1", port: int = 8000):
     httpd = ThreadingHTTPServer((host, port), Handler)
-    print(f"Avaa selaimessa http://{host}:{port}/  (Ctrl+C lopettaa)")
+    print(f"Avaa selaimessa http://{host}:{port}/  (Ctrl+C lopettaa)", flush=True)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
