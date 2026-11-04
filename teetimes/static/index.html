@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vapaat lähtöajat</title>
+<style>
+  :root {
+    --bg: #f6f7f4; --card: #ffffff; --text: #1d2420; --muted: #5d6a62;
+    --line: #dfe4dc; --accent: #2f6b3f; --accent-text: #ffffff; --warn: #8a5a00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #141815; --card: #1d231f; --text: #e7ece8; --muted: #9aa79f;
+            --line: #2f3832; --accent: #6fbf83; --accent-text: #0e1a12; --warn: #e0b45c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 880px; margin: 0 auto; padding: 20px 16px 48px; }
+  h1 { font-size: 1.5rem; margin: 0 0 16px; }
+  form { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+         background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  label { display: grid; gap: 4px; font-size: .85rem; color: var(--muted); }
+  input, select, button { font: inherit; padding: 8px 10px; border-radius: 8px;
+         border: 1px solid var(--line); background: var(--bg); color: var(--text); min-width: 0; }
+  .wide { grid-column: 1 / -1; }
+  button { background: var(--accent); color: var(--accent-text); border: 0; font-weight: 600; cursor: pointer; }
+  button:disabled { opacity: .6; cursor: wait; }
+  #status { margin: 16px 0 8px; color: var(--muted); }
+  .hour { margin: 20px 0 6px; font-weight: 600; color: var(--muted); font-size: .9rem; }
+  .row { display: grid; grid-template-columns: 92px 1fr auto; gap: 4px 12px; align-items: baseline;
+         grid-template-areas: "time club free" ". opts opts" ". meta meta";
+         background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 6px 0; }
+  .time { grid-area: time; } .club { grid-area: club; } .free { grid-area: free; }
+  .opts { grid-area: opts; } .meta { grid-area: meta; }
+  .time { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .club { font-weight: 600; }
+  .opts, .meta { font-size: .9rem; color: var(--muted); }
+  .free { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .meta .warn { color: var(--warn); }
+  a { color: var(--accent); }
+  details { margin-top: 24px; color: var(--muted); font-size: .9rem; }
+  @media (max-width: 520px) {
+    .row { grid-template-columns: 1fr auto;
+           grid-template-areas: "time free" "club club" "opts opts" "meta meta"; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Vapaat lähtöajat</h1>
+  <form id="f">
+    <label>Päivä <input type="date" name="date" required></label>
+    <label>Pelaajia
+      <select name="players">
+        <option>1</option><option selected>2</option><option>3</option><option>4</option>
+        <option>5</option><option>6</option><option>7</option><option>8</option>
+        <option>12</option><option>16</option>
+      </select>
+    </label>
+    <label>Aikaisintaan <input type="time" name="from" step="600"></label>
+    <label>Viimeistään <input type="time" name="to" step="600"></label>
+    <label>Reiät
+      <select name="holes"><option value="">kaikki</option><option>18</option><option>9</option></select>
+    </label>
+    <label class="wide">Seurat (tyhjä = kaikki; esim. tapiola, master, peuramaa)
+      <input name="clubs" placeholder="kaikki WiseGolf-seurat">
+    </label>
+    <button class="wide" id="go">Hae</button>
+  </form>
+  <div id="status"></div>
+  <div id="results"></div>
+  <details id="closedBox" hidden><summary>Ei varattavissa tälle päivälle</summary><ul id="closed"></ul></details>
+  <details id="errBox" hidden><summary>Virheet</summary><ul id="errs"></ul></details>
+</main>
+<script>
+const f = document.getElementById('f');
+const statusEl = document.getElementById('status');
+const results = document.getElementById('results');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const eur = p => p == null ? 'hinta ?' : `${Math.round(p)} €`;
+
+function restore() {
+  const q = new URLSearchParams(location.search);
+  const d = new Date(); d.setDate(d.getDate() + 1);
+  f.date.value = q.get('date') || d.toISOString().slice(0, 10);
+  for (const k of ['players', 'from', 'to', 'holes', 'clubs']) if (q.get(k)) f[k].value = q.get(k);
+}
+
+async function run(ev) {
+  ev?.preventDefault();
+  const q = new URLSearchParams(new FormData(f));
+  for (const [k, v] of [...q]) if (!v) q.delete(k);
+  history.replaceState(null, '', '?' + q);
+  const btn = document.getElementById('go');
+  btn.disabled = true; statusEl.textContent = 'Haetaan suoraan seurojen kalentereista…'; results.innerHTML = '';
+  try {
+    const r = await fetch('/api/search?' + q);
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || r.statusText);
+    render(data);
+  } catch (e) {
+    statusEl.textContent = 'Haku epäonnistui: ' + e.message;
+  } finally { btn.disabled = false; }
+}
+
+function render(d) {
+  const t = d.searched_at.slice(11, 16);
+  statusEl.textContent = `${d.matches.length} sopivaa lähtöä, ${d.courses_checked} kenttää tarkistettu (klo ${t}).`;
+  let html = '', hour = null;
+  for (const m of d.matches) {
+    const h = m.starts[0].slice(0, 2);
+    if (h !== hour) { hour = h; html += `<div class="hour">klo ${h}</div>`; }
+    const when = m.starts.length > 1 ? `${m.starts[0]}–${m.starts[m.starts.length - 1]}` : m.starts[0];
+    const opts = m.options.map(o => `${esc(o.course.trim())}${o.holes && !o.course.includes(o.holes) ? ` (${o.holes} r)` : ''} ${eur(o.price)}`).join(' · ');
+    const meta = [];
+    if (m.starts.length > 1) meta.push(`${m.starts.length} peräkkäistä lähtöä`);
+    if (m.handicap_limit != null) meta.push(`tasoitus yhteensä max ${m.handicap_limit}`);
+    for (const n of m.notes) meta.push(`<span class="warn">${esc(n)}</span>`);
+    meta.push(`<a href="${esc(m.booking_url)}" target="_blank" rel="noopener">Varaa WiseGolfissa</a>`);
+    meta.push(`<a href="${esc(m.site_url)}" target="_blank" rel="noopener">seuran sivut</a>`);
+    html += `<div class="row"><span class="time">${when}</span><span class="club">${esc(m.club.trim())}</span>
+      <span class="free">vapaana ${m.free.join('+')}</span>
+      <span class="opts">${opts}</span><span class="meta">${meta.join(' · ')}</span></div>`;
+  }
+  results.innerHTML = html || '<p>Ei vapaita lähtöjä näillä ehdoilla.</p>';
+  const list = (box, ul, items) => {
+    document.getElementById(box).hidden = !items.length;
+    document.getElementById(ul).innerHTML = items.join('');
+  };
+  list('closedBox', 'closed', d.closed.map(c => `<li>${esc(c.club)} – ${esc(c.course)}: ${esc(c.reason)}</li>`));
+  list('errBox', 'errs', d.errors.map(e => `<li>${esc(e.club)}: ${esc(e.message)}</li>`));
+}
+
+f.addEventListener('submit', run);
+restore();
+if (location.search) run();
+</script>
+</body>
+</html>
