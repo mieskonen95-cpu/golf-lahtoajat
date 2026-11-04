@@ -82,6 +82,16 @@ class CheckTest(unittest.TestCase):
         self.assertEqual((state, sent), ({}, []))
 
 
+class CheckerTest(unittest.TestCase):
+    def test_missing_topic_fails_without_touching_state(self):
+        with tempfile.TemporaryDirectory() as d, mock.patch.dict("os.environ", {}, clear=True):
+            store = alerts.LocalStore(d)
+            store.write(alerts.WATCHES_PATH, {"watches": [WATCH]}, None, "")
+            with self.assertRaises(SystemExit):
+                alerts.run_checker(d, NOW)
+            self.assertEqual(store.read(alerts.STATE_PATH)[0], {})
+
+
 class StoreTest(unittest.TestCase):
     def test_add_list_delete(self):
         with tempfile.TemporaryDirectory() as d:

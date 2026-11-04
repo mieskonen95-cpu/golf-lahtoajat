@@ -270,7 +270,9 @@ def run_checker(root: str | Path, now: datetime, dry_run: bool = False) -> int:
             real(title, message, click)
 
     if not topic and not dry_run:
-        print("NTFY_TOPIC puuttuu: ilmoituksia ei lähetetä.")
+        # Fail loudly: without a topic every alert would look "sent" but nothing arrives.
+        raise SystemExit("NTFY_TOPIC puuttuu: lisää se repon Settings → Secrets and "
+                         "variables → Actions → Secrets. Mitään ei tarkistettu.")
     new_state = check_all(watches, state, now, notify,
                           os.environ.get("APP_URL") or "https://golf-lahtoajat.onrender.com")
     if _meaningful(new_state) != _meaningful(state) and not dry_run:
