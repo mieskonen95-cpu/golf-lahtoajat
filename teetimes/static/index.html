@@ -12,38 +12,79 @@
   :root {
     --bg: #f6f7f4; --card: #ffffff; --text: #1d2420; --muted: #5d6a62;
     --line: #dfe4dc; --accent: #2f6b3f; --accent-text: #ffffff; --warn: #8a5a00;
+    --chip: #e9eee6; --budget: #2f6b3f; --premium: #7a5a12;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg: #141815; --card: #1d231f; --text: #e7ece8; --muted: #9aa79f;
-            --line: #2f3832; --accent: #6fbf83; --accent-text: #0e1a12; --warn: #e0b45c; }
+            --line: #2f3832; --accent: #6fbf83; --accent-text: #0e1a12; --warn: #e0b45c;
+            --chip: #26302a; --budget: #6fbf83; --premium: #e0b45c; }
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
          font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
   main { max-width: 880px; margin: 0 auto; padding: 20px 16px 48px; }
   h1 { font-size: 1.5rem; margin: 0 0 16px; }
+  h2 { font-size: 1.05rem; margin: 28px 0 8px; }
   form { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
          background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
   label { display: grid; gap: 4px; font-size: .85rem; color: var(--muted); }
   input, select, button { font: inherit; padding: 8px 10px; border-radius: 8px;
          border: 1px solid var(--line); background: var(--bg); color: var(--text); min-width: 0; }
   .wide { grid-column: 1 / -1; }
-  button { background: var(--accent); color: var(--accent-text); border: 0; font-weight: 600; cursor: pointer; }
+  button { cursor: pointer; }
+  .primary { background: var(--accent); color: var(--accent-text); border: 0; font-weight: 600; }
   button:disabled { opacity: .6; cursor: wait; }
+
+  /* quick buckets */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .chip { border-radius: 999px; padding: 6px 12px; background: var(--chip); border: 1px solid var(--line); font-size: .9rem; }
+  .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  .near-opts { display: none; gap: 8px; flex-wrap: wrap; width: 100%; }
+  .near-opts.on { display: flex; }
+  .near-opts select { padding: 6px 8px; font-size: .9rem; }
+
+  /* club picker */
+  .picker { position: relative; }
+  .picker > button { width: 100%; text-align: left; display: flex; justify-content: space-between; gap: 8px; }
+  .picker > button span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .panel { display: none; position: absolute; z-index: 10; left: 0; right: 0; top: calc(100% + 4px);
+           background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+           box-shadow: 0 8px 24px rgba(0,0,0,.18); padding: 10px; }
+  .panel.open { display: block; }
+  .panel-head { display: flex; gap: 8px; margin-bottom: 8px; }
+  .panel-head input { flex: 1; }
+  .panel-head button { font-size: .85rem; padding: 6px 10px; }
+  .list { max-height: 50vh; overflow: auto; }
+  .region { font-size: .8rem; font-weight: 600; color: var(--muted); margin: 10px 4px 4px; }
+  .club { display: flex; align-items: center; gap: 10px; padding: 8px 6px; border-radius: 6px; cursor: pointer; color: var(--text); font-size: .95rem; }
+  .club:hover { background: var(--chip); }
+  .club input { width: 18px; height: 18px; margin: 0; }
+  .club small { margin-left: auto; color: var(--muted); white-space: nowrap; }
+  .selected { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .selected .chip { padding: 3px 10px; font-size: .85rem; }
+
   #status { margin: 16px 0 8px; color: var(--muted); }
+  #alertBar { display: none; gap: 8px; align-items: center; flex-wrap: wrap; margin: 4px 0 8px; }
+  #alertBar.on { display: flex; }
   .hour { margin: 20px 0 6px; font-weight: 600; color: var(--muted); font-size: .9rem; }
   .row { display: grid; grid-template-columns: 92px 1fr auto; gap: 4px 12px; align-items: baseline;
          grid-template-areas: "time club free" ". opts opts" ". meta meta";
          background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 6px 0; }
-  .time { grid-area: time; } .club { grid-area: club; } .free { grid-area: free; }
+  .time { grid-area: time; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .cname { grid-area: club; font-weight: 600; }
+  .free { grid-area: free; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .opts { grid-area: opts; } .meta { grid-area: meta; }
-  .time { font-weight: 700; font-variant-numeric: tabular-nums; }
-  .club { font-weight: 600; }
   .opts, .meta { font-size: .9rem; color: var(--muted); }
-  .free { font-variant-numeric: tabular-nums; white-space: nowrap; }
   .meta .warn { color: var(--warn); }
+  .tier { font-size: .75rem; font-weight: 600; border: 1px solid currentColor; border-radius: 999px; padding: 0 7px; margin-left: 6px; }
+  .tier.budget { color: var(--budget); } .tier.premium { color: var(--premium); }
   a { color: var(--accent); }
   details { margin-top: 24px; color: var(--muted); font-size: .9rem; }
+  .alert { display: flex; gap: 10px; align-items: center; background: var(--card); border: 1px solid var(--line);
+           border-radius: 10px; padding: 10px 12px; margin: 6px 0; }
+  .alert div { flex: 1; } .alert small { display: block; color: var(--muted); }
+  .alert button { padding: 4px 10px; }
+  .muted { color: var(--muted); font-size: .9rem; }
   @media (max-width: 520px) {
     .row { grid-template-columns: 1fr auto;
            grid-template-areas: "time free" "club club" "opts opts" "meta meta"; }
@@ -67,50 +108,163 @@
     <label>Reiät
       <select name="holes"><option value="">kaikki</option><option>18</option><option>9</option></select>
     </label>
-    <label class="wide">Seurat (tyhjä = kaikki; esim. tapiola, master, peuramaa)
-      <input name="clubs" placeholder="kaikki WiseGolf-seurat">
-    </label>
-    <button class="wide" id="go">Hae</button>
+
+    <div class="wide">
+      <div class="chips" role="group" aria-label="Pikahaut">
+        <button type="button" class="chip" id="nearChip" aria-pressed="false">Lähellä</button>
+        <button type="button" class="chip" data-tier="budget" aria-pressed="false">Edulliset</button>
+        <button type="button" class="chip" data-tier="premium" aria-pressed="false">Premium</button>
+        <div class="near-opts" id="nearOpts">
+          <select name="near" aria-label="Etäisyys">
+            <option value="20">≤ 20 km</option><option value="40" selected>≤ 40 km</option>
+            <option value="60">≤ 60 km</option><option value="100">≤ 100 km</option>
+            <option value="200">≤ 200 km</option>
+          </select>
+          <select name="origin" id="origin" aria-label="Mistä"></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="wide picker" id="picker">
+      <label for="pickBtn">Seurat</label>
+      <button type="button" id="pickBtn" aria-expanded="false"><span id="pickText">Kaikki seurat</span><span>▾</span></button>
+      <div class="panel" id="panel">
+        <div class="panel-head">
+          <input id="filter" placeholder="Hae seuraa tai paikkakuntaa" autocomplete="off">
+          <button type="button" id="clearClubs">Tyhjennä</button>
+          <button type="button" id="closePanel">Valmis</button>
+        </div>
+        <div class="list" id="list"></div>
+      </div>
+      <div class="selected" id="selected"></div>
+    </div>
+
+    <button class="wide primary" id="go">Hae</button>
   </form>
+
   <div id="status"></div>
+  <div id="alertBar">
+    <button type="button" id="alertBtn">Hälytä kun vapautuu</button>
+    <span class="muted" id="alertMsg"></span>
+  </div>
   <div id="results"></div>
   <details id="closedBox" hidden><summary>Ei varattavissa tälle päivälle</summary><ul id="closed"></ul></details>
   <details id="errBox" hidden><summary>Virheet</summary><ul id="errs"></ul></details>
+
+  <h2>Hälytykset</h2>
+  <div id="alerts" class="muted">Ladataan…</div>
 </main>
 <script>
-const f = document.getElementById('f');
-const statusEl = document.getElementById('status');
-const results = document.getElementById('results');
+const $ = id => document.getElementById(id);
+const f = $('f');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const eur = p => p == null ? 'hinta ?' : `${Math.round(p)} €`;
+const TIER = {budget: 'edullinen', premium: 'premium'};
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+};
 
+let clubs = [];             // from /api/clubs
+const selected = new Set(); // club ids (strings)
+let tier = '';
+let near = false;
+let lastQuery = null;
+
+// ---------- club picker ----------
+function renderList() {
+  const q = $('filter').value.trim().toLowerCase();
+  const groups = {};
+  for (const c of clubs) {
+    if (q && !(`${c.name} ${c.municipality || ''} ${c.region || ''}`.toLowerCase().includes(q))) continue;
+    (groups[c.region || 'Muut'] ||= []).push(c);
+  }
+  const order = Object.keys(groups).sort((a, b) => (a === 'Uusimaa' ? -1 : b === 'Uusimaa' ? 1 : a.localeCompare(b, 'fi')));
+  $('list').innerHTML = order.map(r => `<div class="region">${esc(r)}</div>` + groups[r].map(c => `
+    <label class="club"><input type="checkbox" value="${c.id}" ${selected.has(String(c.id)) ? 'checked' : ''}>
+      <span>${esc(c.name)}</span><small>${esc(c.municipality || '')}</small></label>`).join('')).join('')
+    || '<p class="muted">Ei osumia.</p>';
+}
+function renderSelected() {
+  const names = clubs.filter(c => selected.has(String(c.id)));
+  $('pickText').textContent = names.length ? `${names.length} valittu` : 'Kaikki seurat';
+  $('selected').innerHTML = names.map(c =>
+    `<button type="button" class="chip" data-remove="${c.id}" title="Poista">${esc(c.name)} ✕</button>`).join('');
+}
+function togglePanel(open) {
+  $('panel').classList.toggle('open', open);
+  $('pickBtn').setAttribute('aria-expanded', open);
+  if (open) { renderList(); $('filter').focus(); }
+}
+$('pickBtn').onclick = () => togglePanel(!$('panel').classList.contains('open'));
+$('closePanel').onclick = () => togglePanel(false);
+$('filter').oninput = renderList;
+$('clearClubs').onclick = () => { selected.clear(); renderList(); renderSelected(); };
+$('list').onchange = e => {
+  if (e.target.type !== 'checkbox') return;
+  e.target.checked ? selected.add(e.target.value) : selected.delete(e.target.value);
+  renderSelected();
+};
+$('selected').onclick = e => {
+  const id = e.target.dataset.remove; if (!id) return;
+  selected.delete(id); renderSelected();
+};
+document.addEventListener('click', e => { if (!$('picker').contains(e.target)) togglePanel(false); });
+
+// ---------- quick buckets ----------
+function setNear(on) {
+  near = on; $('nearChip').setAttribute('aria-pressed', on); $('nearOpts').classList.toggle('on', on);
+}
+function setTier(t) {
+  tier = t;
+  document.querySelectorAll('[data-tier]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tier === t));
+}
+$('nearChip').onclick = () => setNear(!near);
+document.querySelectorAll('[data-tier]').forEach(b => b.onclick = () => setTier(tier === b.dataset.tier ? '' : b.dataset.tier));
+
+// ---------- query <-> URL ----------
+function currentQuery() {
+  const q = {};
+  for (const k of ['date', 'players', 'from', 'to', 'holes']) if (f[k].value) q[k] = f[k].value;
+  if (selected.size) q.clubs = [...selected].join(',');
+  if (near) { q.near = f.near.value; if (f.origin.value) q.origin = f.origin.value; }
+  if (tier) q.tier = tier;
+  return q;
+}
 function restore() {
   const q = new URLSearchParams(location.search);
   const d = new Date(); d.setDate(d.getDate() + 1);
   f.date.value = q.get('date') || d.toISOString().slice(0, 10);
-  for (const k of ['players', 'from', 'to', 'holes', 'clubs']) if (q.get(k)) f[k].value = q.get(k);
+  for (const k of ['players', 'from', 'to', 'holes']) if (q.get(k)) f[k].value = q.get(k);
+  for (const id of (q.get('clubs') || '').split(',')) if (/^\d+$/.test(id)) selected.add(id);
+  if (q.get('near')) { f.near.value = q.get('near'); setNear(true); }
+  if (q.get('origin')) f.origin.value = q.get('origin');
+  if (q.get('tier')) setTier(q.get('tier'));
 }
 
+// ---------- search ----------
 async function run(ev) {
   ev?.preventDefault();
-  const q = new URLSearchParams(new FormData(f));
-  for (const [k, v] of [...q]) if (!v) q.delete(k);
-  history.replaceState(null, '', '?' + q);
-  const btn = document.getElementById('go');
-  btn.disabled = true; statusEl.textContent = 'Haetaan suoraan seurojen kalentereista… Kaikkien seurojen haku voi kestää minuutin.'; results.innerHTML = '';
+  togglePanel(false);
+  const q = currentQuery();
+  history.replaceState(null, '', '?' + new URLSearchParams(q));
+  $('go').disabled = true; $('results').innerHTML = ''; $('alertBar').classList.remove('on');
+  $('status').textContent = 'Haetaan suoraan seurojen kalentereista… Kaikkien seurojen haku voi kestää minuutin.';
   try {
-    const r = await fetch('/api/search?' + q);
+    const r = await fetch('/api/search?' + new URLSearchParams(q));
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || r.statusText);
-    render(data);
+    lastQuery = q; render(data);
   } catch (e) {
-    statusEl.textContent = 'Haku epäonnistui: ' + e.message;
-  } finally { btn.disabled = false; }
+    $('status').textContent = 'Haku epäonnistui: ' + e.message;
+  } finally { $('go').disabled = false; }
 }
 
 function render(d) {
   const t = d.searched_at.slice(11, 16);
-  statusEl.textContent = `${d.matches.length} sopivaa lähtöä, ${d.courses_checked} kenttää tarkistettu (klo ${t}).`;
+  $('status').textContent = `${d.matches.length} sopivaa lähtöä, ${d.courses_checked} kenttää tarkistettu (klo ${t}).`;
+  $('alertBar').classList.add('on');
+  $('alertMsg').textContent = d.matches.length ? 'Ilmoitus tulee, kun uusia sopivia lähtöjä vapautuu.' : 'Ilmoitus tulee, kun jokin vapautuu.';
   let html = '', hour = null;
   for (const m of d.matches) {
     const h = m.starts[0].slice(0, 2);
@@ -118,27 +272,78 @@ function render(d) {
     const when = m.starts.length > 1 ? `${m.starts[0]}–${m.starts[m.starts.length - 1]}` : m.starts[0];
     const opts = m.options.map(o => `${esc(o.course.trim())}${o.holes && !o.course.includes(o.holes) ? ` (${o.holes} r)` : ''} ${eur(o.price)}`).join(' · ');
     const meta = [];
+    if (m.distance_km != null) meta.push(`${esc(m.municipality || '')} ${m.distance_km} km`);
     if (m.starts.length > 1) meta.push(`${m.starts.length} peräkkäistä lähtöä`);
     if (m.handicap_limit != null) meta.push(`tasoitus yhteensä max ${m.handicap_limit}`);
     for (const n of m.notes) meta.push(`<span class="warn">${esc(n)}</span>`);
     meta.push(`<a href="${esc(m.booking_url)}" target="_blank" rel="noopener">Varaa WiseGolfissa</a>`);
     meta.push(`<a href="${esc(m.site_url)}" target="_blank" rel="noopener">seuran sivut</a>`);
-    html += `<div class="row"><span class="time">${when}</span><span class="club">${esc(m.club.trim())}</span>
+    const badge = m.tier ? `<span class="tier ${m.tier}">${TIER[m.tier]}</span>` : '';
+    html += `<div class="row"><span class="time">${when}</span><span class="cname">${esc(m.club.trim())}${badge}</span>
       <span class="free">vapaana ${m.free.join('+')}</span>
       <span class="opts">${opts}</span><span class="meta">${meta.join(' · ')}</span></div>`;
   }
-  results.innerHTML = html || '<p>Ei vapaita lähtöjä näillä ehdoilla.</p>';
-  const list = (box, ul, items) => {
-    document.getElementById(box).hidden = !items.length;
-    document.getElementById(ul).innerHTML = items.join('');
-  };
+  $('results').innerHTML = html || '<p>Ei vapaita lähtöjä näillä ehdoilla.</p>';
+  const list = (box, ul, items) => { $(box).hidden = !items.length; $(ul).innerHTML = items.join(''); };
   list('closedBox', 'closed', d.closed.map(c => `<li>${esc(c.club)} – ${esc(c.course)}: ${esc(c.reason)}</li>`));
   list('errBox', 'errs', d.errors.map(e => `<li>${esc(e.club)}: ${esc(e.message)}</li>`));
 }
 
+// ---------- alerts ----------
+async function alertCall(method, url, body) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    let pin = store.get('alertPin');
+    if (!pin || attempt) {
+      pin = prompt('Hälytysten PIN-koodi:'); if (!pin) return null;
+    }
+    const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json', 'X-Alert-Pin': pin },
+                                 body: body ? JSON.stringify(body) : undefined });
+    const data = await r.json().catch(() => ({}));
+    if (r.status === 403) { alert('Väärä PIN.'); continue; }
+    if (!r.ok) throw new Error(data.error || r.statusText);
+    store.set('alertPin', pin);
+    return data;
+  }
+  return null;
+}
+$('alertBtn').onclick = async () => {
+  if (!lastQuery) return;
+  $('alertBtn').disabled = true; $('alertMsg').textContent = 'Tallennetaan…';
+  try {
+    const d = await alertCall('POST', '/api/alerts', { query: lastQuery });
+    $('alertMsg').textContent = d ? `Hälytys tallennettu: ${d.alert.label}` : '';
+    loadAlerts();
+  } catch (e) { $('alertMsg').textContent = e.message; }
+  finally { $('alertBtn').disabled = false; }
+};
+async function loadAlerts() {
+  try {
+    const r = await fetch('/api/alerts'); const d = await r.json();
+    if (!r.ok) throw new Error(d.error || r.statusText);
+    $('alerts').innerHTML = d.alerts.length ? d.alerts.map(a => {
+      const note = a.notified_at ? `viimeksi ilmoitettu ${a.notified_at.slice(8, 10)}.${a.notified_at.slice(5, 7)}. klo ${a.notified_at.slice(11, 16)}`
+                                 : 'ei ilmoituksia vielä';
+      return `<div class="alert"><div><a href="/?${new URLSearchParams(a.query)}">${esc(a.label)}</a>
+        <small>${a.count} sopivaa lähtöä · ${note}</small></div>
+        <button type="button" data-del="${esc(a.id)}" aria-label="Poista hälytys">Poista</button></div>`;
+    }).join('') : 'Ei hälytyksiä. Tee haku ja paina "Hälytä kun vapautuu".';
+  } catch (e) { $('alerts').textContent = e.message; }
+}
+$('alerts').onclick = async e => {
+  const id = e.target.dataset.del; if (!id) return;
+  try { await alertCall('DELETE', '/api/alerts/' + id); loadAlerts(); } catch (err) { alert(err.message); }
+};
+
+// ---------- start ----------
 f.addEventListener('submit', run);
-restore();
-if (location.search) run();
+(async () => {
+  const [c, o] = await Promise.all([fetch('/api/clubs').then(r => r.json()), fetch('/api/origins').then(r => r.json())]);
+  clubs = c.clubs;
+  $('origin').innerHTML = o.origins.map((n, i) => `<option value="${i ? esc(n) : ''}">${i ? esc(n) : 'Tapiolasta'}</option>`).join('');
+  restore(); renderSelected();
+  if (location.search) run();
+  loadAlerts();
+})();
 </script>
 </body>
 </html>

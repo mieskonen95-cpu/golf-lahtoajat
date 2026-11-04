@@ -54,6 +54,26 @@ class CourseDay:
     handicap_limits: dict[str, float]  # "default" or group size -> max combined hcp
     calendar_open: bool = True
     closed_reason: str | None = None
+    list_price: float | None = None  # highest guest green fee of the day
+
+
+def list_price(settings: dict, day: date) -> float | None:
+    """The course's highest guest green fee on `day` (base price or price rules).
+
+    Used to tell budget courses from premium ones, so it ignores cheap
+    twilight times on purpose.
+    """
+    prices = [_to_float(settings.get("price"))]
+    for res in golf_resources(settings):
+        for r in res.get("priceRules") or []:
+            if not _weekday_ok(r, day):
+                continue
+            ds, de = _parse_date(r.get("dateStart")), _parse_date(r.get("dateEnd"))
+            if (ds and day < ds) or (de and day > de):
+                continue
+            prices.append(_to_float(r.get("newPrice")))
+    prices = [p for p in prices if p]
+    return max(prices) if prices else None
 
 
 # --- helpers -----------------------------------------------------------------
@@ -354,7 +374,8 @@ def course_day(calendar: dict, tee_sheet: dict, day: date, now: datetime) -> Cou
                    holes=holes_of(settings, name),
                    interval=int(settings.get("duration") or 10)
                    + int(settings.get("breakTime") or 0),
-                   tee_times=[], handicap_limits=limits)
+                   tee_times=[], handicap_limits=limits,
+                   list_price=list_price(settings, day))
     reason = calendar_closed_reason(settings, rules, day, now)
     if reason:
         cd.calendar_open, cd.closed_reason = False, reason

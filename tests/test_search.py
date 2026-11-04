@@ -48,12 +48,21 @@ class GroupTest(unittest.TestCase):
 
     def test_merge_9_and_18_on_same_tee(self):
         def m(course, holes, price, free):
-            return Match(club="Tapiola Golf", tee_id=1, tee="", starts=[datetime(2026, 6, 6, 8)],
+            return Match(club="Tapiola Golf", club_id=134, tee_id=1, tee="", starts=[datetime(2026, 6, 6, 8)],
                          free=[free], options=[CourseOption(course, holes, price)],
                          handicap_limit=None, notes=[], site_url="")
         out = merge_shared_tees([m("9r", 9, 47.0, 4), m("18r", 18, 80.0, 4)])
         self.assertEqual(len(out), 1)
         self.assertEqual([o.holes for o in out[0].options], [18, 9])
+        self.assertEqual(out[0].key, "134:1:08:00")
+
+    def test_price_tier(self):
+        from teetimes.search import price_tier
+        self.assertEqual(price_tier(18, 45.0), "budget")
+        self.assertEqual(price_tier(9, 25.0), "budget")
+        self.assertIsNone(price_tier(18, 70.0))
+        self.assertEqual(price_tier(18, 119.0), "premium")
+        self.assertIsNone(price_tier(18, None))
 
 
 if __name__ == "__main__":

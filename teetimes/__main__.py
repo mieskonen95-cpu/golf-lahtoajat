@@ -43,7 +43,16 @@ def main(argv=None) -> int:
     # Hosting services (e.g. Render) pass the port in $PORT and need 0.0.0.0.
     v.add_argument("--port", type=int, default=int(os.environ.get("PORT", 8000)))
     v.add_argument("--host", default="0.0.0.0" if "PORT" in os.environ else "127.0.0.1")
+    c = sub.add_parser("check-alerts", help="tarkista tallennetut hälytykset (GitHub Actions)")
+    c.add_argument("--dir", default=".", help="repon juurihakemisto")
+    c.add_argument("--dry-run", action="store_true", help="älä lähetä ilmoituksia äläkä tallenna")
     args = ap.parse_args(argv)
+
+    if args.cmd == "check-alerts":
+        from .alerts import run_checker
+        from .search import now_local
+        run_checker(args.dir, now_local(), dry_run=args.dry_run)
+        return 0
 
     if args.cmd == "serve":
         from .server import serve

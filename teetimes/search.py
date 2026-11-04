@@ -13,6 +13,12 @@ from .availability import (CourseDay, TeeTime, course_day, golf_resources,
                            handicap_limit_for, is_golf_calendar)
 from .clubs import Host, load_hosts
 
+# Price tiers by the course's highest 18-hole guest fee of the day
+# (summer Saturday 2026: quartiles 58 / 65 / 75 EUR, range 20-125 EUR).
+BUDGET_MAX_PRICE = 55.0
+PREMIUM_MIN_PRICE = 85.0
+TIERS = ("budget", "premium")
+
 TZ = ZoneInfo("Europe/Helsinki")
 BOOKING_APP_URL = "https://app.wisegolf.fi/#/golf/welcome"
 
@@ -28,6 +34,19 @@ class CourseOption:
     course: str
     holes: int | None
     price: float | None  # green fee per player, guest price
+    list_price: float | None = None  # course's highest guest fee of the day
+
+
+def price_tier(holes: int | None, price: float | None) -> str | None:
+    """'budget', 'premium' or None (mid-range or unknown)."""
+    if not price:
+        return None
+    eq18 = price * 2 if holes == 9 else price
+    if eq18 <= BUDGET_MAX_PRICE:
+        return "budget"
+    if eq18 >= PREMIUM_MIN_PRICE:
+        return "premium"
+    return None
 
 
 @dataclass
@@ -35,6 +54,7 @@ class Match:
     """A tee time (or consecutive tee times) that fits the whole group."""
 
     club: str
+    club_id: int
     tee_id: int
     tee: str
     starts: list[datetime]
@@ -44,6 +64,14 @@ class Match:
     notes: list[str]
     site_url: str
     booking_url: str = BOOKING_APP_URL
+    distance_km: float | None = None  # from the search origin
+    municipality: str | None = None
+    tier: str | None = None
+
+    @property
+    def key(self) -> str:
+        """Stable identity of this tee time, used to spot new ones for alerts."""
+        return f"{self.club_id}:{self.tee_id}:" + ",".join(t.strftime("%H:%M") for t in self.starts)
 
     @property
     def course(self) -> str:
@@ -141,7 +169,7 @@ def warm_up(hosts: list[Host] | None = None, workers: int = 8) -> None:
 
 def _search_host(host: Host, day: date, players: int, now: datetime,
                  earliest: time | None, latest: time | None, holes: int | None,
-                 max_gap: int | None) -> SearchResult:
+                 max_gap: int | None, club_ids: set[int] | None = None) -> SearchResult:
     res = SearchResult()
     ds = day.isoformat()
     try:
@@ -158,8 +186,11 @@ def _search_host(host: Host, day: date, players: int, now: datetime,
             cd_probe = course_day(cal, {"rows": []}, day, now)
             if holes and cd_probe.holes and cd_probe.holes != holes:
                 continue
+            raw_club = golf_resources(settings)[0].get("clubId")
+            club_id, club = host.club_id(raw_club), host.club_name(raw_club)
+            if club_ids is not None and club_id not in club_ids:
+                continue
             res.courses_checked += 1
-            club = host.club_name(golf_resources(settings)[0].get("clubId"))
             if not cd_probe.calendar_open:
                 res.closed.append((club, cd_probe.product_name,
                                    cd_probe.closed_reason or ""))
@@ -169,12 +200,13 @@ def _search_host(host: Host, day: date, players: int, now: datetime,
         except wisegolf.ApiError as e:
             res.errors.append((host.display_name, f"{p.get('name')}: {e}"))
             continue
-        res.matches.extend(_matches(host, club, cd, players, earliest, latest, max_gap))
+        res.matches.extend(_matches(host, club_id, club, cd, players, earliest,
+                                    latest, max_gap))
     res.matches = merge_shared_tees(res.matches)
     return res
 
 
-def _matches(host: Host, club: str, cd: CourseDay, players: int, earliest: time | None,
+def _matches(host: Host, club_id: int, club: str, cd: CourseDay, players: int, earliest: time | None,
              latest: time | None, max_gap: int | None) -> list[Match]:
     times = [t for t in cd.tee_times
              if (earliest is None or t.start.time() >= earliest)
@@ -186,10 +218,11 @@ def _matches(host: Host, club: str, cd: CourseDay, players: int, earliest: time 
             notes.append("etulähtö (vapautunut)")
         prices = [t.price for t in run if t.price is not None]
         out.append(Match(
-            club=club, tee_id=run[0].resource_id, tee=run[0].resource_name,
+            club=club, club_id=club_id, tee_id=run[0].resource_id,
+            tee=run[0].resource_name,
             starts=[t.start for t in run], free=[t.free for t in run],
             options=[CourseOption(cd.product_name, cd.holes,
-                                  max(prices) if prices else None)],
+                                  max(prices) if prices else None, cd.list_price)],
             handicap_limit=handicap_limit_for(cd.handicap_limits, players),
             notes=notes, site_url=host.site_url))
     return out
@@ -214,24 +247,32 @@ def merge_shared_tees(matches: list[Match]) -> list[Match]:
                                   else min(cur.handicap_limit, m.handicap_limit))
     for m in merged.values():
         m.options.sort(key=lambda o: -(o.holes or 0))
+        top = m.options[0]
+        m.tier = price_tier(top.holes, top.list_price)
     return list(merged.values())
 
 
 def search(day: date, players: int, *, hosts: list[Host] | None = None,
            earliest: time | None = None, latest: time | None = None,
            holes: int | None = None, max_gap: int | None = None,
-           now: datetime | None = None, workers: int = 16) -> SearchResult:
+           club_ids: set[int] | None = None, tier: str | None = None,
+           now: datetime | None = None, workers: int = 8) -> SearchResult:
+    """Search one day. `club_ids` limits to those clubs, `tier` to 'budget'/'premium'."""
     hosts = hosts if hosts is not None else load_hosts()
+    if club_ids is not None:
+        hosts = [h for h in hosts if set(h.golf_club_ids) & club_ids]
     now = now or now_local()
     total = SearchResult()
     with ThreadPoolExecutor(max_workers=workers) as ex:
         parts = ex.map(lambda h: _search_host(h, day, players, now, earliest,
-                                              latest, holes, max_gap), hosts)
+                                              latest, holes, max_gap, club_ids), hosts)
         for part in parts:
             total.matches.extend(part.matches)
             total.closed.extend(part.closed)
             total.errors.extend(part.errors)
             total.courses_checked += part.courses_checked
+    if tier:
+        total.matches = [m for m in total.matches if m.tier == tier]
     total.matches.sort(key=lambda m: (m.starts[0], m.club, m.tee_id))
     return total
 

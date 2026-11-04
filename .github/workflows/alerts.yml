@@ -1,0 +1,39 @@
+name: Tee time alerts
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"  # GitHub may run scheduled jobs some minutes late
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: alerts
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check saved searches
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          APP_URL: ${{ vars.APP_URL }}
+        run: python3 -m teetimes check-alerts
+
+      - name: Save what was found
+        run: |
+          git diff --quiet alerts/state.json && exit 0
+          git config user.name "tee-time-alerts"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add alerts/state.json
+          git commit -m "Update alert state [skip render]"
+          for i in 1 2 3; do
+            git pull --rebase --quiet && git push && exit 0
+            sleep 5
+          done
+          exit 1

@@ -31,6 +31,39 @@ every push. On the phone, open the `…onrender.com` address and use
 "Add to Home Screen". The free tier sleeps when idle, so the first search
 after a break takes longer.
 
+## Finding courses
+
+- **Seurat:** tick clubs in the dropdown (search by club or town). Empty = all clubs.
+- **Lähellä:** clubs within 20–200 km of Tapiola or of any club town
+  (straight-line distance; locations in `data/club_locations.tsv`).
+- **Edulliset / Premium:** by the course's highest 18-hole guest fee of the day:
+  at most €55 / at least €85 (9-hole courses: twice the 9-hole fee). On a summer
+  Saturday 2026 the middle half of courses cost €58–75.
+
+## Alerts ("Hälytä kun vapautuu")
+
+After a search, the alert button saves it. Every 15 minutes GitHub Actions
+(`.github/workflows/alerts.yml`) runs the saved searches and sends a push
+notification through [ntfy](https://ntfy.sh) when a matching tee time appears
+that wasn't there before. Saved searches live in `alerts/watches.json`, what
+they last found in `alerts/state.json`.
+
+An alert must be limited to at most 25 clubs (pick clubs or use "Lähellä"),
+at most 10 alerts at a time, and alerts end after their day.
+
+Setup (once):
+
+1. **ntfy:** install the ntfy app, subscribe to a hard-to-guess topic name.
+2. **GitHub repo → Settings → Secrets and variables → Actions:** secret
+   `NTFY_TOPIC` = that topic name.
+3. **GitHub token** for the web app: fine-grained token with *Contents: read and
+   write* on this repo only.
+4. **Render → Environment:** `GITHUB_TOKEN` = that token, `ALERT_PIN` = a PIN you
+   choose (asked once per phone when you create or delete alerts).
+
+Scheduled workflows run only on the default branch (`main`), and GitHub may run
+them some minutes late.
+
 ## What counts as a match
 
 | Players | Needs |
@@ -56,9 +89,12 @@ limit for your group size when the club has one.
 
 - `teetimes/wisegolf.py` – anonymous WiseGolf REST client
 - `teetimes/availability.py` – calendar + tee sheet → bookable tee times (mirrors the WiseGolf app's rules)
-- `teetimes/search.py` – group matching, parallel search over all clubs
+- `teetimes/search.py` – group matching, price tiers, parallel search over all clubs
+- `teetimes/query.py` – search parameters shared by the page and alerts
+- `teetimes/alerts.py` – saved searches, checker, ntfy push
 - `teetimes/server.py`, `teetimes/static/index.html` – local web UI (Finnish)
 - `data/wisegolf_clubs.tsv` – club hosts, extracted from the WiseGolf app bundle
+- `data/club_locations.tsv` – club towns (from each club's website) and approximate coordinates
 - `docs/RESEARCH.md` – API notes and decisions
 
 ## Tests

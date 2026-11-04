@@ -8,3 +8,9 @@ services:
     startCommand: python3 -m teetimes serve
     healthCheckPath: /healthz
     autoDeploy: true
+    envVars:
+      # Set these in the Render dashboard (Environment); they are secrets.
+      - key: ALERT_PIN        # PIN asked when creating/deleting alerts
+        sync: false
+      - key: GITHUB_TOKEN     # fine-grained token, Contents read/write on this repo
+        sync: false
