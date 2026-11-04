@@ -1,1 +1,20 @@
-{"watches": []}
+{
+  "watches": [
+    {
+      "id": "a49587b5",
+      "created": "2026-11-04T21:35:54",
+      "query": {
+        "date": "2026-11-07",
+        "players": "16",
+        "near": "20",
+        "tier": "premium"
+      },
+      "label": "la 7.11. · 16 pelaajaa · ≤20 km Tapiolasta · premium",
+      "baseline": [
+        "41:1:15:00,15:10,15:20,15:30",
+        "41:1:15:10,15:20,15:30,15:40"
+      ],
+      "baseline_count": 2
+    }
+  ]
+}
