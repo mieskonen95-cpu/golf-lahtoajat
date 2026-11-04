@@ -18,7 +18,7 @@ import os
 import secrets
 import urllib.error
 import urllib.request
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from urllib.parse import urlencode
 
@@ -102,11 +102,24 @@ def store_from_env():
 
 
 # --- alerts -------------------------------------------------------------------
+#
+# A one-day alert has query["date"]. A recurring alert has no date in its query
+# but a "repeat": {"days": [5, 6], "start": "2027-05-01", "end": "2027-09-30"}
+# (weekdays Monday=0). Recurring alerts only check days within HORIZON_DAYS:
+# calendars further ahead are not open yet, and WiseGolf rate-limits us.
+#
+# What an alert has seen is stored as "<date>|<club>:<tee>:<starts>" keys.
 
-def describe(q: dict[str, str], day: date) -> str:
-    """Short Finnish label, e.g. 'la 7.11. · 8 pelaajaa · Tapiola Golf, Master · 8–14'."""
-    parts = [f"{WEEKDAYS[day.weekday()]} {day.day}.{day.month}.",
-             f"{q.get('players', '2')} pelaajaa"]
+HORIZON_DAYS = 14
+MAX_REPEAT_DAYS = 400
+
+
+def _fmt_day(d: date) -> str:
+    return f"{WEEKDAYS[d.weekday()]} {d.day}.{d.month}."
+
+
+def _filters(q: dict[str, str]) -> list[str]:
+    parts = [f"{q.get('players', '2')} pelaajaa"]
     if q.get("clubs"):
         names = {str(c["id"]): c["name"] for c in club_catalog()}
         sel = [names.get(t.strip(), t.strip()) for t in q["clubs"].split(",") if t.strip()]
@@ -123,30 +136,68 @@ def describe(q: dict[str, str], day: date) -> str:
         parts.append(f"klo {q['from']} alkaen")
     elif q.get("to"):
         parts.append(f"klo {q['to']} mennessä")
-    return " · ".join(parts)
+    return parts
 
 
-def new_alert(qs: dict, now: datetime) -> tuple[dict, list[str]]:
+def describe(q: dict[str, str], day: date | None = None, repeat: dict | None = None) -> str:
+    """Short Finnish label, e.g. 'la+su 1.5.–30.9.2027 · 8 pelaajaa · Tapiola Golf'."""
+    if repeat:
+        s, e = date.fromisoformat(repeat["start"]), date.fromisoformat(repeat["end"])
+        when = "+".join(WEEKDAYS[i] for i in sorted(repeat["days"]))
+        when += f" {s.day}.{s.month}.–{e.day}.{e.month}.{e.year}"
+    else:
+        when = _fmt_day(day)
+    return " · ".join([when] + _filters(q))
+
+
+def parse_repeat(repeat: dict | None, now: datetime) -> dict | None:
+    if not repeat:
+        return None
+    try:
+        days = sorted({int(d) for d in repeat.get("days") or []})
+        start = date.fromisoformat(str(repeat.get("start") or now.date().isoformat()))
+        end = date.fromisoformat(str(repeat["end"]))
+    except (KeyError, TypeError, ValueError):
+        raise AlertError("Toistuvalle hälytykselle tarvitaan viikonpäivät ja aikaväli.")
+    if not days or any(d < 0 or d > 6 for d in days):
+        raise AlertError("Valitse ainakin yksi viikonpäivä.")
+    if end < start:
+        raise AlertError("Aikavälin loppu on ennen alkua.")
+    if end < now.date():
+        raise AlertError("Aikaväli on jo mennyt.")
+    if (end - start).days > MAX_REPEAT_DAYS:
+        raise AlertError("Aikaväli voi olla enintään vuoden.")
+    return {"days": days, "start": start.isoformat(), "end": end.isoformat()}
+
+
+def new_alert(qs: dict, now: datetime, repeat: dict | None = None) -> tuple[dict, dict]:
     """Validate a search for alerting; returns the alert and its query args."""
     q = query.clean(qs)
     args = query.parse(q)
-    if args["day"] < now.date():
-        raise AlertError("Päivä on jo mennyt.")
-    q["date"] = args["day"].isoformat()  # "la" etc. must not drift to next week
+    rep = parse_repeat(repeat, now)
     ids = args["club_ids"]
     if ids is None or len(ids) > MAX_ALERT_CLUBS:
         raise AlertError(f"Rajaa hälytys enintään {MAX_ALERT_CLUBS} seuraan "
                          "(valitse seurat tai 'Lähellä').")
-    alert = {"id": secrets.token_hex(4), "created": now.isoformat(timespec="seconds"),
-             "query": q, "label": describe(q, args["day"])}
+    alert = {"id": secrets.token_hex(4), "created": now.isoformat(timespec="seconds")}
+    if rep:
+        q.pop("date", None)
+        alert.update(query=q, repeat=rep, label=describe(q, repeat=rep), initialized=False)
+    else:
+        if args["day"] < now.date():
+            raise AlertError("Päivä on jo mennyt.")
+        q["date"] = args["day"].isoformat()  # "la" etc. must not drift to next week
+        alert.update(query=q, label=describe(q, args["day"]))
     return alert, args
 
 
-def add_alert(store, qs: dict, now: datetime) -> dict:
-    alert, _ = new_alert(qs, now)
-    day, result = query.execute(alert["query"])
-    alert["baseline"] = sorted(m.key for m in result.matches)
-    alert["baseline_count"] = len(result.matches)
+def add_alert(store, qs: dict, now: datetime, repeat: dict | None = None) -> dict:
+    alert, _ = new_alert(qs, now, repeat)
+    if not alert.get("repeat"):
+        # One-day alert: what the search shows now is already known to you.
+        day, result = query.execute(alert["query"])
+        alert["baseline"] = sorted(dated_key(day, m) for m in result.matches)
+        alert["baseline_count"] = len(result.matches)
     data, sha = store.read(WATCHES_PATH)
     watches = [w for w in data.get("watches", []) if not _expired(w, now)]
     if len(watches) >= MAX_ALERTS:
@@ -173,15 +224,49 @@ def list_alerts(store, now: datetime) -> list[dict]:
         if _expired(w, now):
             continue
         s = state.get(w["id"], {})
-        out.append({"id": w["id"], "label": w["label"], "query": w["query"],
-                    "created": w["created"], "checked_at": s.get("checked_at"),
-                    "notified_at": s.get("notified_at"),
-                    "count": len(s.get("seen", w.get("baseline", [])))})
+        days = dates_for(w, now.date())
+        q = dict(w["query"])
+        if days and "date" not in q:
+            q["date"] = days[0].isoformat()  # link opens the next checked day
+        today = now.date().isoformat()
+        seen = [k for k in _seen(w, s) if k.split("|", 1)[0] >= today]
+        out.append({"id": w["id"], "label": w["label"], "query": q,
+                    "repeat": w.get("repeat"), "created": w["created"],
+                    "checked_at": s.get("checked_at"), "notified_at": s.get("notified_at"),
+                    "next_days": [d.isoformat() for d in days], "count": len(seen)})
     return out
 
 
+def dated_key(day: date, m) -> str:
+    return f"{day.isoformat()}|{m.key}"
+
+
+def _seen(w: dict, s: dict) -> set[str]:
+    keys = s.get("seen", w.get("baseline", []))
+    d = w["query"].get("date")
+    # Keys saved before dates were added: they belong to the alert's only day.
+    return {k if "|" in k else f"{d}|{k}" for k in keys}
+
+
+def dates_for(w: dict, today: date) -> list[date]:
+    """The days this alert checks now."""
+    if w.get("repeat"):
+        r = w["repeat"]
+        first = max(date.fromisoformat(r["start"]), today)
+        last = min(date.fromisoformat(r["end"]), today + timedelta(days=HORIZON_DAYS))
+        out, d = [], first
+        while d <= last:
+            if d.weekday() in r["days"]:
+                out.append(d)
+            d += timedelta(days=1)
+        return out
+    d = date.fromisoformat(w["query"]["date"])
+    return [d] if d >= today else []
+
+
 def _expired(w: dict, now: datetime) -> bool:
-    return w["query"]["date"] < now.date().isoformat()
+    end = w["repeat"]["end"] if w.get("repeat") else w["query"]["date"]
+    return end < now.date().isoformat()
 
 
 # --- checking -----------------------------------------------------------------
@@ -190,52 +275,80 @@ def check_all(watches: list[dict], state: dict, now: datetime, notify,
               app_url: str) -> dict:
     """Run every saved search; notify about tee times not seen before.
 
-    Returns the new state. `notify(title, message, click_url)` sends one push.
+    Returns the new state. `notify(title, message, click_url)` sends one push
+    per alert and run. For a recurring alert, a day checked for the first time
+    is announced as "Varattavissa" (its booking just opened); later changes as
+    "Vapautui". The first run of a new recurring alert only records what is
+    free, without a push.
     """
     new_state = {}
+    today, stamp = now.date(), now.isoformat(timespec="seconds")
     for w in watches:
         if _expired(w, now):
             continue
         prev = state.get(w["id"], {})
-        seen = set(prev.get("seen", w.get("baseline", [])))
-        try:
-            day, result = query.execute(w["query"])
-        except Exception as e:  # keep checking the other alerts
-            new_state[w["id"]] = {**prev, "error": str(e)[:200],
-                                  "checked_at": now.isoformat(timespec="seconds")}
-            continue
-        current = {m.key: m for m in result.matches}
-        fresh = [current[k] for k in sorted(set(current) - seen)]
-        entry = {"seen": sorted(current), "checked_at": now.isoformat(timespec="seconds"),
-                 "notified_at": prev.get("notified_at")}
-        incomplete = bool(result.errors)
-        if incomplete:
-            # Courses we could not read must not look like "all booked" next time.
-            entry["seen"] = sorted(set(current) | seen)
-        if fresh:
-            click = f"{app_url.rstrip('/')}/?{urlencode(w['query'])}"
+        seen = _seen(w, prev)
+        known_days = set(prev.get("days", []))
+        silent = bool(w.get("repeat")) and not prev.get("initialized") \
+            and w.get("initialized") is False
+        current: dict[str, tuple[date, object]] = {}
+        keep: set[str] = set()  # keys of days we couldn't read completely
+        errors, opened, checked = [], [], []
+        for day in dates_for(w, today):
+            q = {**w["query"], "date": day.isoformat()}
             try:
-                notify(f"Vapautui: {w['label']}", _message(fresh), click)
-                entry["notified_at"] = now.isoformat(timespec="seconds")
+                _, result = query.execute(q)
+            except Exception as e:  # keep checking other days and alerts
+                errors.append(f"{day}: {e}"[:200])
+                keep |= {k for k in seen if k.startswith(f"{day}|")}
+                continue
+            checked.append(day.isoformat())
+            for m in result.matches:
+                current[dated_key(day, m)] = (day, m)
+            if result.errors:
+                # Courses we could not read must not look like "all booked" next time.
+                keep |= {k for k in seen if k.startswith(f"{day}|")}
+            if w.get("repeat") and day.isoformat() not in known_days \
+                    and any(k.startswith(f"{day}|") for k in current):
+                opened.append(day)
+        fresh = [current[k] for k in sorted(set(current) - seen)]
+        entry = {"seen": sorted(set(current) | keep),
+                 "days": sorted(known_days | set(checked)),
+                 "checked_at": stamp, "notified_at": prev.get("notified_at")}
+        if w.get("repeat"):
+            entry["initialized"] = True
+        if errors:
+            entry["error"] = "; ".join(errors)[:300]
+        if fresh and not silent:
+            first_day = fresh[0][0]
+            click = f"{app_url.rstrip('/')}/?{urlencode({**w['query'], 'date': first_day.isoformat()})}"
+            all_opened = all(d in opened for d, _ in fresh)
+            title = ("Varattavissa: " if all_opened else "Vapautui: ") + w["label"]
+            try:
+                notify(title, _message(fresh, dated=bool(w.get("repeat"))), click)
+                entry["notified_at"] = stamp
             except Exception as e:
                 # Not announced: leave these out of "seen" so the next run retries.
-                entry["seen"] = sorted(set(entry["seen"]) - {m.key for m in fresh})
+                entry["seen"] = sorted(set(entry["seen"]) - {dated_key(d, m) for d, m in fresh})
+                entry["days"] = sorted(known_days)
                 entry["error"] = f"ilmoitus epäonnistui: {e}"[:200]
                 print(f"Ilmoitus epäonnistui ({w['id']}): {e}")
         new_state[w["id"]] = entry
     return new_state
 
 
-def _message(fresh) -> str:
+def _message(fresh, dated: bool = False) -> str:
     lines = []
-    for m in fresh[:8]:
+    for day, m in fresh[:10]:
         when = m.starts[0].strftime("%H:%M")
         if len(m.starts) > 1:
             when += "–" + m.starts[-1].strftime("%H:%M")
+        if dated:
+            when = f"{_fmt_day(day)} {when}"
         price = next((f" {o.price:.0f} €" for o in m.options if o.price), "")
         lines.append(f"{when} {m.club.strip()} ({'+'.join(map(str, m.free))} vapaana){price}")
-    if len(fresh) > 8:
-        lines.append(f"… ja {len(fresh) - 8} muuta")
+    if len(fresh) > 10:
+        lines.append(f"… ja {len(fresh) - 10} muuta")
     return "\n".join(lines)
 
 

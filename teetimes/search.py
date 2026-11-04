@@ -64,6 +64,7 @@ class Match:
     notes: list[str]
     site_url: str
     booking_url: str = BOOKING_APP_URL
+    interval: int = 10  # minutes between starts on this tee
     distance_km: float | None = None  # from the search origin
     municipality: str | None = None
     tier: str | None = None
@@ -224,7 +225,7 @@ def _matches(host: Host, club_id: int, club: str, cd: CourseDay, players: int, e
             options=[CourseOption(cd.product_name, cd.holes,
                                   max(prices) if prices else None, cd.list_price)],
             handicap_limit=handicap_limit_for(cd.handicap_limits, players),
-            notes=notes, site_url=host.site_url))
+            notes=notes, site_url=host.site_url, interval=cd.interval))
     return out
 
 

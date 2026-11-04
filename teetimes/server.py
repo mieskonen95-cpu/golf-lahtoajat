@@ -84,7 +84,8 @@ class Handler(BaseHTTPRequestHandler):
         except (ValueError, json.JSONDecodeError):
             return self._json(400, {"error": "virheellinen pyyntö"})
         self._alerts_call(lambda: {"alert": alerts.add_alert(
-            alerts.store_from_env(), body.get("query") or {}, now_local())}, created=True)
+            alerts.store_from_env(), body.get("query") or {}, now_local(),
+            body.get("repeat"))}, created=True)
 
     def do_DELETE(self):  # noqa: N802
         path = urlparse(self.path).path

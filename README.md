@@ -48,6 +48,16 @@ notification through [ntfy](https://ntfy.sh) when a matching tee time appears
 that wasn't there before. Saved searches live in `alerts/watches.json`, what
 they last found in `alerts/state.json`.
 
+Results are shown per course: all fitting start times in a row, with
+back-to-back free times joined into one block.
+
+**Recurring alerts:** tick "Toista viikoittain", pick weekdays and a date range
+(e.g. Saturdays and Sundays 1.5.–30.9.2027). Each run checks the matching days
+within the next 14 days (booking calendars further ahead aren't open yet).
+When a day's booking opens you get one "Varattavissa" push with what's free;
+after that, "Vapautui" pushes for newly freed times. A new recurring alert's
+first run only records what's free, without a push.
+
 An alert must be limited to at most 25 clubs (pick clubs or use "Lähellä"),
 at most 10 alerts at a time, and alerts end after their day.
 

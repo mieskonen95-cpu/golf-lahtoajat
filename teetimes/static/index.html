@@ -66,16 +66,29 @@
   #status { margin: 16px 0 8px; color: var(--muted); }
   #alertBar { display: none; gap: 8px; align-items: center; flex-wrap: wrap; margin: 4px 0 8px; }
   #alertBar.on { display: flex; }
-  .hour { margin: 20px 0 6px; font-weight: 600; color: var(--muted); font-size: .9rem; }
-  .row { display: grid; grid-template-columns: 92px 1fr auto; gap: 4px 12px; align-items: baseline;
-         grid-template-areas: "time club free" ". opts opts" ". meta meta";
-         background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 6px 0; }
-  .time { grid-area: time; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .cname { grid-area: club; font-weight: 600; }
-  .free { grid-area: free; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .opts { grid-area: opts; } .meta { grid-area: meta; }
-  .opts, .meta { font-size: .9rem; color: var(--muted); }
+  .sortbar { display: flex; gap: 8px; align-items: center; justify-content: flex-end; font-size: .85rem; color: var(--muted); }
+  .sortbar select { padding: 4px 8px; font-size: .85rem; }
+  .course { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin: 10px 0; }
+  .course-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+  .cname { font-weight: 700; font-size: 1.05rem; }
+  .count { margin-left: auto; color: var(--muted); font-size: .85rem; white-space: nowrap; }
+  .opts, .meta { font-size: .9rem; color: var(--muted); margin-top: 2px; }
   .meta .warn { color: var(--warn); }
+  .times { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+  .block { display: inline-flex; border: 1px solid var(--accent); border-radius: 8px; overflow: hidden; }
+  .block.multi { box-shadow: inset 0 0 0 1px var(--accent); }
+  .t { display: grid; justify-items: center; padding: 4px 9px; min-width: 58px; font-variant-numeric: tabular-nums; }
+  .t + .t { border-left: 1px solid var(--line); }
+  .t b { font-size: .95rem; }
+  .t small { font-size: .72rem; color: var(--muted); }
+  .t.hot b::after { content: "•"; color: var(--warn); margin-left: 2px; }
+  .block.multi .t { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  .blocklabel { font-size: .75rem; color: var(--muted); margin: -2px 0 0; width: 100%; }
+  .legend { font-size: .8rem; color: var(--muted); margin-top: 4px; }
+  #repeatBox { display: none; width: 100%; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
+  #repeatBox.on { display: flex; }
+  #repeatBox input[type=date] { padding: 6px 8px; font-size: .9rem; }
+  .wd { padding: 4px 10px; font-size: .85rem; }
   .tier { font-size: .75rem; font-weight: 600; border: 1px solid currentColor; border-radius: 999px; padding: 0 7px; margin-left: 6px; }
   .tier.budget { color: var(--budget); } .tier.premium { color: var(--premium); }
   a { color: var(--accent); }
@@ -145,7 +158,16 @@
   <div id="status"></div>
   <div id="alertBar">
     <button type="button" id="alertBtn">Hälytä kun vapautuu</button>
+    <label class="muted" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="repeatOn"> Toista viikoittain</label>
+    <div id="repeatBox">
+      <span class="chips" id="weekdays"></span>
+      <label class="muted">alkaen <input type="date" id="repStart"></label>
+      <label class="muted">asti <input type="date" id="repEnd"></label>
+    </div>
     <span class="muted" id="alertMsg"></span>
+  </div>
+  <div class="sortbar" id="sortbar" hidden>Järjestys
+    <select id="sort"><option value="time">aikaisin lähtö</option><option value="dist">etäisyys</option><option value="price">hinta</option></select>
   </div>
   <div id="results"></div>
   <details id="closedBox" hidden><summary>Ei varattavissa tälle päivälle</summary><ul id="closed"></ul></details>
@@ -260,34 +282,112 @@ async function run(ev) {
   } finally { $('go').disabled = false; }
 }
 
-function render(d) {
-  const t = d.searched_at.slice(11, 16);
-  $('status').textContent = `${d.matches.length} sopivaa lähtöä, ${d.courses_checked} kenttää tarkistettu (klo ${t}).`;
-  $('alertBar').classList.add('on');
-  $('alertMsg').textContent = d.matches.length ? 'Ilmoitus tulee, kun uusia sopivia lähtöjä vapautuu.' : 'Ilmoitus tulee, kun jokin vapautuu.';
-  let html = '', hour = null;
+let lastData = null;
+
+// Group matches into one entry per course (club + tee), with blocks of
+// back-to-back start times.
+function groupCourses(d) {
+  const groups = new Map();
   for (const m of d.matches) {
-    const h = m.starts[0].slice(0, 2);
-    if (h !== hour) { hour = h; html += `<div class="hour">klo ${h}</div>`; }
-    const when = m.starts.length > 1 ? `${m.starts[0]}–${m.starts[m.starts.length - 1]}` : m.starts[0];
-    const opts = m.options.map(o => `${esc(o.course.trim())}${o.holes && !o.course.includes(o.holes) ? ` (${o.holes} r)` : ''} ${eur(o.price)}`).join(' · ');
+    const key = `${m.club_id}:${m.tee_id}`;
+    let g = groups.get(key);
+    if (!g) {
+      g = { m, times: new Map(), options: new Map(), notes: new Set() };
+      groups.set(key, g);
+    }
+    m.starts.forEach((t, i) => {
+      const prev = g.times.get(t);
+      const price = m.options[0]?.price;
+      g.times.set(t, { t, free: Math.max(m.free[i], prev?.free ?? 0), price,
+                       hot: m.notes.some(n => n.startsWith('etulähtö')) || prev?.hot });
+    });
+    for (const o of m.options) {
+      const cur = g.options.get(o.course) || { ...o, min: o.price, max: o.price };
+      if (o.price != null) { cur.min = Math.min(cur.min ?? o.price, o.price); cur.max = Math.max(cur.max ?? o.price, o.price); }
+      g.options.set(o.course, cur);
+    }
+    for (const n of m.notes) if (!n.startsWith('etulähtö')) g.notes.add(n);
+  }
+  const mins = t => +t.slice(0, 2) * 60 + +t.slice(3, 5);
+  for (const g of groups.values()) {
+    const times = [...g.times.values()].sort((a, b) => mins(a.t) - mins(b.t));
+    g.blocks = [];
+    for (const x of times) {
+      const last = g.blocks.at(-1);
+      if (last && mins(x.t) - mins(last.at(-1).t) <= g.m.interval) last.push(x); else g.blocks.push([x]);
+    }
+    g.first = times.length ? mins(times[0].t) : 9999;
+    g.minPrice = Math.min(...times.map(x => x.price ?? 9999));
+    g.count = times.length;
+  }
+  return [...groups.values()];
+}
+
+const n = (k, one, many) => `${k} ${k === 1 ? one : many}`;
+function render(d) {
+  lastData = d;
+  const t = d.searched_at.slice(11, 16);
+  const groups = groupCourses(d);
+  $('status').textContent = `${d.matches.length ? n(groups.length, 'kenttä', 'kenttää') + ', ' : ''}${n(d.matches.length, 'sopiva lähtö', 'sopivaa lähtöä')} · ${n(d.courses_checked, 'kenttä', 'kenttää')} tarkistettu (klo ${t}).`;
+  $('alertBar').classList.add('on');
+  $('sortbar').hidden = groups.length < 2;
+  $('alertMsg').textContent = d.matches.length ? 'Ilmoitus tulee, kun uusia sopivia lähtöjä vapautuu.' : 'Ilmoitus tulee, kun jokin vapautuu.';
+  const sort = $('sort').value;
+  groups.sort((a, b) => sort === 'dist' ? (a.m.distance_km ?? 9999) - (b.m.distance_km ?? 9999) || a.first - b.first
+                      : sort === 'price' ? a.minPrice - b.minPrice || a.first - b.first
+                      : a.first - b.first || (a.m.distance_km ?? 0) - (b.m.distance_km ?? 0));
+  const big = d.players > 4;
+  const html = groups.map(g => {
+    const m = g.m;
+    const opts = [...g.options.values()].sort((a, b) => (b.holes || 0) - (a.holes || 0)).map(o => {
+      const price = o.min == null ? 'hinta ?' : o.min === o.max ? eur(o.min) : `${Math.round(o.min)}–${eur(o.max)}`;
+      return `${esc(o.course.trim())}${o.holes && !o.course.includes(o.holes) ? ` (${o.holes} r)` : ''} ${price}`;
+    }).join(' · ');
+    const varies = [...g.options.values()].some(o => o.min !== o.max);
     const meta = [];
     if (m.distance_km != null) meta.push(`${esc(m.municipality || '')} ${m.distance_km} km`);
-    if (m.starts.length > 1) meta.push(`${m.starts.length} peräkkäistä lähtöä`);
     if (m.handicap_limit != null) meta.push(`tasoitus yhteensä max ${m.handicap_limit}`);
-    for (const n of m.notes) meta.push(`<span class="warn">${esc(n)}</span>`);
+    for (const n of g.notes) meta.push(`<span class="warn">${esc(n)}</span>`);
     meta.push(`<a href="${esc(m.booking_url)}" target="_blank" rel="noopener">Varaa WiseGolfissa</a>`);
     meta.push(`<a href="${esc(m.site_url)}" target="_blank" rel="noopener">seuran sivut</a>`);
-    const badge = m.tier ? `<span class="tier ${m.tier}">${TIER[m.tier]}</span>` : '';
-    html += `<div class="row"><span class="time">${when}</span><span class="cname">${esc(m.club.trim())}${badge}</span>
-      <span class="free">vapaana ${m.free.join('+')}</span>
-      <span class="opts">${opts}</span><span class="meta">${meta.join(' · ')}</span></div>`;
-  }
+    const badge = m.tier ? ` <span class="tier ${m.tier}">${TIER[m.tier]}</span>` : '';
+    const blocks = g.blocks.map(b => {
+      const cells = b.map(x => `<span class="t${x.hot ? ' hot' : ''}" title="vapaana ${x.free}${x.price != null ? ', ' + eur(x.price) : ''}"><b>${x.t}</b><small>${x.free} vap.${varies && x.price != null ? ' · ' + eur(x.price) : ''}</small></span>`).join('');
+      return `<span class="block${b.length > 1 ? ' multi' : ''}">${cells}</span>`;
+    }).join('');
+    const longest = Math.max(...g.blocks.map(b => b.length));
+    const note = big ? `Ryhmä mahtuu ${d.players <= 8 ? 'kahteen' : 'useaan'} peräkkäiseen lähtöön näistä kohdista.`
+               : longest > 1 ? `Peräkkäiset vapaat lähdöt on yhdistetty.` : '';
+    return `<div class="course"><div class="course-head"><span class="cname">${esc(m.club.trim())}</span>${badge}
+        <span class="count">${n(g.count, 'lähtö', 'lähtöä')}</span></div>
+      <div class="opts">${opts}</div>
+      <div class="times">${blocks}</div>
+      ${note ? `<div class="legend">${note}${g.blocks.some(b => b.some(x => x.hot)) ? ' • = vapautunut etulähtö.' : ''}</div>` : ''}
+      <div class="meta">${meta.join(' · ')}</div></div>`;
+  }).join('');
   $('results').innerHTML = html || '<p>Ei vapaita lähtöjä näillä ehdoilla.</p>';
   const list = (box, ul, items) => { $(box).hidden = !items.length; $(ul).innerHTML = items.join(''); };
   list('closedBox', 'closed', d.closed.map(c => `<li>${esc(c.club)} – ${esc(c.course)}: ${esc(c.reason)}</li>`));
   list('errBox', 'errs', d.errors.map(e => `<li>${esc(e.club)}: ${esc(e.message)}</li>`));
+  initRepeat(d.date);
 }
+$('sort').onchange = () => lastData && render(lastData);
+
+// ---------- recurring alert options ----------
+const WD = ['ma', 'ti', 'ke', 'to', 'pe', 'la', 'su'];
+const repDays = new Set();
+function initRepeat(dateStr) {
+  if (repDays.size === 0) repDays.add((new Date(dateStr + 'T12:00').getDay() + 6) % 7);
+  $('weekdays').innerHTML = WD.map((n, i) => `<button type="button" class="chip wd" data-wd="${i}" aria-pressed="${repDays.has(i)}">${n}</button>`).join('');
+  if (!$('repStart').value) $('repStart').value = dateStr;
+  if (!$('repEnd').value) { const e = new Date(dateStr + 'T12:00'); e.setMonth(e.getMonth() + 3); $('repEnd').value = e.toISOString().slice(0, 10); }
+}
+$('weekdays').onclick = e => {
+  const i = e.target.dataset.wd; if (i == null) return;
+  repDays.has(+i) ? repDays.delete(+i) : repDays.add(+i);
+  e.target.setAttribute('aria-pressed', repDays.has(+i));
+};
+$('repeatOn').onchange = () => $('repeatBox').classList.toggle('on', $('repeatOn').checked);
 
 // ---------- alerts ----------
 async function alertCall(method, url, body) {
@@ -310,7 +410,9 @@ $('alertBtn').onclick = async () => {
   if (!lastQuery) return;
   $('alertBtn').disabled = true; $('alertMsg').textContent = 'Tallennetaan…';
   try {
-    const d = await alertCall('POST', '/api/alerts', { query: lastQuery });
+    const body = { query: lastQuery };
+    if ($('repeatOn').checked) body.repeat = { days: [...repDays], start: $('repStart').value, end: $('repEnd').value };
+    const d = await alertCall('POST', '/api/alerts', body);
     $('alertMsg').textContent = d ? `Hälytys tallennettu: ${d.alert.label}` : '';
     loadAlerts();
   } catch (e) { $('alertMsg').textContent = e.message; }
@@ -323,8 +425,11 @@ async function loadAlerts() {
     $('alerts').innerHTML = d.alerts.length ? d.alerts.map(a => {
       const note = a.notified_at ? `viimeksi ilmoitettu ${a.notified_at.slice(8, 10)}.${a.notified_at.slice(5, 7)}. klo ${a.notified_at.slice(11, 16)}`
                                  : 'ei ilmoituksia vielä';
+      const days = a.repeat ? (a.next_days.length
+          ? ` · tarkistaa ${a.next_days.slice(0, 4).map(x => { const dt = new Date(x + 'T12:00'); return `${WD[(dt.getDay() + 6) % 7]} ${dt.getDate()}.${dt.getMonth() + 1}.`; }).join(', ')}${a.next_days.length > 4 ? ' …' : ''}`
+          : ' · alkaa tarkistaa 2 viikkoa ennen ensimmäistä päivää') : '';
       return `<div class="alert"><div><a href="/?${new URLSearchParams(a.query)}">${esc(a.label)}</a>
-        <small>${a.count} sopivaa lähtöä · ${note}</small></div>
+        <small>${a.count} sopivaa lähtöä · ${note}${days}</small></div>
         <button type="button" data-del="${esc(a.id)}" aria-label="Poista hälytys">Poista</button></div>`;
     }).join('') : 'Ei hälytyksiä. Tee haku ja paina "Hälytä kun vapautuu".';
   } catch (e) { $('alerts').textContent = e.message; }
