@@ -128,6 +128,17 @@ def _host_products(host: Host) -> list[dict]:
     return prods
 
 
+def warm_up(hosts: list[Host] | None = None, workers: int = 8) -> None:
+    """Load every club's course list ahead of the first search."""
+    def one(h):
+        try:
+            _host_products(h)
+        except wisegolf.ApiError:
+            pass
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        list(ex.map(one, hosts if hosts is not None else load_hosts()))
+
+
 def _search_host(host: Host, day: date, players: int, now: datetime,
                  earliest: time | None, latest: time | None, holes: int | None,
                  max_gap: int | None) -> SearchResult:

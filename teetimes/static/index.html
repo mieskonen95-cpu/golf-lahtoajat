@@ -97,7 +97,7 @@ async function run(ev) {
   for (const [k, v] of [...q]) if (!v) q.delete(k);
   history.replaceState(null, '', '?' + q);
   const btn = document.getElementById('go');
-  btn.disabled = true; statusEl.textContent = 'Haetaan suoraan seurojen kalentereista…'; results.innerHTML = '';
+  btn.disabled = true; statusEl.textContent = 'Haetaan suoraan seurojen kalentereista… Kaikkien seurojen haku voi kestää minuutin.'; results.innerHTML = '';
   try {
     const r = await fetch('/api/search?' + q);
     const data = await r.json();

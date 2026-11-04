@@ -10,7 +10,7 @@ from urllib.parse import parse_qs, urlparse
 
 from .parsing import parse_day, parse_time
 from .clubs import load_hosts
-from .search import filter_hosts, now_local, search
+from .search import filter_hosts, now_local, search, warm_up
 
 PAGE = Path(__file__).with_name("static") / "index.html"
 MAX_PLAYERS = 16
@@ -87,6 +87,7 @@ class Handler(BaseHTTPRequestHandler):
 
 def serve(host: str = "127.0.0.1", port: int = 8000):
     httpd = ThreadingHTTPServer((host, port), Handler)
+    threading.Thread(target=warm_up, daemon=True).start()
     print(f"Avaa selaimessa http://{host}:{port}/  (Ctrl+C lopettaa)", flush=True)
     try:
         httpd.serve_forever()
