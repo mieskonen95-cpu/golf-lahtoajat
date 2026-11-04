@@ -97,7 +97,7 @@ def store_from_env():
     token = os.environ.get("GITHUB_TOKEN")
     if not token:
         raise AlertError("Hälytykset eivät ole käytössä: GITHUB_TOKEN puuttuu palvelimelta.")
-    return GitHubStore(os.environ.get("GITHUB_REPO", "mieskonen95-cpu/upgraded-octo-fortnight"),
+    return GitHubStore(os.environ.get("GITHUB_REPO", "mieskonen95-cpu/golf-lahtoajat"),
                        token, os.environ.get("GITHUB_BRANCH", "main"))
 
 

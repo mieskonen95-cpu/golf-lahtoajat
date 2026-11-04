@@ -1,4 +1,4 @@
-# upgraded-octo-fortnight – vapaat lähtöajat
+# golf-lahtoajat – vapaat lähtöajat
 
 A personal tool that searches free tee times across Finnish golf clubs that use
 WiseGolf (about 88 clubs, ~160 courses). It reads each club's tee sheet live on
